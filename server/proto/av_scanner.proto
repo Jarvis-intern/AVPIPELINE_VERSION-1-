@@ -1,0 +1,112 @@
+syntax = "proto3";
+
+package avscanner;
+
+option go_package = "gitlab.com/magnetite1/av-pipeline/server/proto";
+
+// AVScanner service definition
+service AVScanner {
+  // StartScan starts a scan and returns a stream of scan logs
+  rpc StartScan(ScanRequest) returns (stream ScanLog);
+}
+
+// AVStatus service definition
+service AVStatus {
+  // CheckAVInstalled checks if an AV tool is installed
+  rpc CheckAVInstalled(AVCheckRequest) returns (AVCheckResponse);
+  
+  // GetAVInfo gets version and signature information
+  rpc GetAVInfo(AVInfoRequest) returns (AVInfoResponse);
+}
+
+// VMMonitor service definition
+service VMMonitor {
+  // CheckServerHealth checks the health of the server
+  rpc CheckServerHealth(HealthCheckRequest) returns (HealthCheckResponse);
+  
+
+  // StreamResourceUsage streams real-time system resource usage
+  rpc StreamResourceUsage(StreamResourceRequest) returns (stream ResourceResponse);
+}
+
+// ScanRequest represents a request to start a scan
+message ScanRequest {
+  string scan_id = 1;      // Unique identifier for the scan
+  string scan_path = 2;    // Path to scan
+  string av_tool_name = 3; // Name of the AV tool to use (e.g., "clamav")
+  string command = 4;      // Command to execute
+}
+
+// ScanLog represents a single log entry from the scan
+message ScanLog {
+  string scan_id = 1;    // Scan ID this log belongs to
+  string content = 2;    // Log content
+  string timestamp = 3;  // Timestamp of the log
+  LogLevel level = 4;    // Log level
+  string file_path = 5;  // File path being scanned (if applicable)
+  int32 progress = 6;    // Scan progress (0-100)
+}
+
+// AVCheckRequest represents a request to check AV installation
+message AVCheckRequest {
+  string av_tool_name = 1;  // Name of the AV tool to check
+  string check_command = 2; // Command to check installation
+}
+
+// AVCheckResponse represents the response to an AV check
+message AVCheckResponse {
+  bool is_installed = 1;    // Whether the AV tool is installed
+  string version = 2;       // Version of the AV tool
+  string error_message = 3; // Error message if any
+}
+
+// AVInfoRequest represents a request for AV information
+message AVInfoRequest {
+  string av_tool_name = 1;  // Name of the AV tool
+  string info_command = 2;  // Command to get info
+}
+
+// AVInfoResponse represents AV tool information
+message AVInfoResponse {
+  string version = 1;           // Version of the AV tool
+  string signature_version = 2; // Version of signature database
+  string last_update = 3;       // Last update time
+  string error_message = 4;     // Error message if any
+}
+
+// HealthCheckRequest represents a request to check server health
+message HealthCheckRequest {
+  string check_command = 1; // Command to check health
+}
+
+// HealthCheckResponse represents server health status
+message HealthCheckResponse {
+  bool is_healthy = 1;      // Whether the server is healthy
+  string status = 2;        // Status message
+  repeated string issues = 3; // List of issues if any
+  string last_check = 4;    // Last check timestamp
+}
+
+
+// ResourceResponse represents system resource usage
+message ResourceResponse {
+  double cpu_usage = 1;     // CPU usage percentage
+  double memory_usage = 2;  // Memory usage percentage
+  double disk_usage = 3;    // Disk usage percentage
+  int32 active_scans = 4;   // Number of active scans
+  string last_update = 5;   // Last update timestamp
+}
+
+// StreamResourceRequest represents a request for streaming resource usage
+message StreamResourceRequest {
+  int32 interval_seconds = 1;  // Interval between updates in seconds
+  int32 duration_seconds = 2;  // Duration to stream for (0 for indefinite)
+}
+
+// LogLevel represents the severity level of a log message
+enum LogLevel {
+  INFO = 0;
+  WARNING = 1;
+  ERROR = 2;
+  DEBUG = 3;
+}

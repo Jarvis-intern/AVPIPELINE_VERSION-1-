@@ -1,0 +1,9 @@
+olefile
+rtfde
+tzlocal
+chardet
+lxml
+pdfminer.six
+extract-msg>=0.41.0
+pypff
+libpff-python

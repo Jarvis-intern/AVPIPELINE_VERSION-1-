@@ -1,0 +1,14 @@
+# Environment 
+.venv
+*.env
+
+# Cache
+__pycache__
+
+
+# SpecStory explanation file
+.specstory/.what-is-this.md
+
+tmp
+
+node_modules/
