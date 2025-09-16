@@ -28,6 +28,7 @@ func main() {
 	config.InitDB()
 	db.InitializeDatabase()
 	db.SeedData()
+	handlers.StartSystemMetricsStreamer()
 
 	// Start WebSocket hub
 	go sockets.Hub.Start()

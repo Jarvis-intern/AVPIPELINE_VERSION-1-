@@ -1888,7 +1888,7 @@ func findPSTFiles(dir string) ([]string, error) {
 // convertMBOX handles MBOX file conversion
 func convertMBOX(task conv.ConversionTask, userID string) (*conv.ConversionResult, error) {
 	result := &conv.ConversionResult{
-		Status:         "processing",
+		Status:                 "processing",
 		ConversionType: "mbox",
 		Path:           task.Path,
 		StartTime:      time.Now(),

@@ -448,7 +448,18 @@ func handleAutomationScanning(client *sockets.Client, data map[string]any) {
 									"endTime":   scanEndTime,
 								}
 								sockets.EmitToUser(client.UserID, "av_scan_done", doneEvent)
-								avScanData[j] = avEntry
+
+								// NEW: dashboard activity + aggregate (lightweight; replace with real counters)
+								EmitActivity(ActivityItem{
+									Type: "scan",
+									Title: "AV Scan Finished",
+									Desc:  avData.Name + " completed",
+									Time:  time.Now().Format(time.RFC3339),
+								})
+								// (Optional) if you can compute aggregated stats here:
+								// EmitScanStats(totalFiles, scannedSoFar, infectedSoFar, inProgressCount)
+
+                                avScanData[j] = avEntry
 								updated = true
 								break
 							}
@@ -491,6 +502,14 @@ func handleAutomationScanning(client *sockets.Client, data map[string]any) {
 			"scanning_id": taskId,
 			"message":     "All AV scans complete",
 			"end_time":    time.Now().Format(time.RFC3339),
+		})
+
+		// Dashboard activity emission for overall completion
+		EmitActivity(ActivityItem{
+			Type:  "scan",
+			Title: "All AV Scans Complete",
+			Desc:  fmt.Sprintf("Task %s AV_SCAN stage finished", taskId),
+			Time:  time.Now().Format(time.RFC3339),
 		})
 		SignalStageComplete(taskId, "AV_SCAN")
 	}()
