@@ -22,6 +22,8 @@ interface AutomateStore {
   setStages: (stages: Stage[]) => void;
   setConfigData: (id: number, type: keyof FlowStep, values: string[]) => void;
   setAutoProceed: (id: number, values: boolean) => void;
+  setSecureDelete: (id: number, value: boolean) => void;
+  setKeepDeletionLog: (id: number, value: boolean) => void;
   setIsLockMode: (isLockedMode: boolean) => void;
   setStageProgress: (stageProgress: StageProgress[]) => void;
   setWasResynced: (value: boolean) => void;
@@ -51,7 +53,7 @@ export const useAutomateStore = create<AutomateStore>((set) => ({
         step.id === id
           ? {
               ...step,
-              [type]: values.length === step[type].length ? [] : values,
+              [type]: values,
             }
           : step
       ),
@@ -63,6 +65,28 @@ export const useAutomateStore = create<AutomateStore>((set) => ({
           ? {
               ...step,
               auto_proceed: value,
+            }
+          : step
+      ),
+    })),
+  setSecureDelete: (id, value) =>
+    set((state) => ({
+      workFlowData: state.workFlowData.map((step) =>
+        step.id === id
+          ? {
+              ...step,
+              secureDelete: value,
+            }
+          : step
+      ),
+    })),
+  setKeepDeletionLog: (id, value) =>
+    set((state) => ({
+      workFlowData: state.workFlowData.map((step) =>
+        step.id === id
+          ? {
+              ...step,
+              keepDeletionLog: value,
             }
           : step
       ),

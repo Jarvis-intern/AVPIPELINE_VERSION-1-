@@ -62,7 +62,7 @@ export function WorkflowBuilder({
   const [showValidationErrorModal, setShowValidationErrorModal] =
     useState(false);
 
-  const { workFlowData, stages, isLockMode, setIsLockMode } =
+  const { workFlowData, stages, isLockMode, setIsLockMode, setWorkFlowData } =
     useAutomateStore();
   const { masterData } = useMasterDataStore();
 
@@ -101,6 +101,50 @@ export function WorkflowBuilder({
       });
       setShowValidationErrorModal(true);
       return;
+    }
+  };
+
+  // Global select/clear all selectable options across steps
+  const allSelectedGlobally = (() => {
+    // Determine if every selectable array is fully populated
+    for (const step of workFlowData) {
+      if (step.type === FlowStepType.CONVERSION) {
+        if (!step.conversion || step.conversion.length !== masterData.conversion.length) return false;
+      } else if (step.type === FlowStepType.REMOVAL) {
+        if (!step.removal || step.removal.length !== masterData.removal.length) return false;
+      } else if (step.type === FlowStepType.VERIFY_REMOVAL) {
+        if (!step.verify_removal || step.verify_removal.length !== masterData.verify_removal.length) return false;
+      } else if (step.type === FlowStepType.AV_SCAN) {
+        if (!step.avs || step.avs.length !== masterData.avs.length) return false;
+      }
+    }
+    return true;
+  })();
+
+  const handleGlobalSelectToggle = () => {
+    if (isLockMode) return;
+    if (allSelectedGlobally) {
+      // Clear all selectable arrays
+      setWorkFlowData(
+        workFlowData.map(step => {
+          if (step.type === FlowStepType.CONVERSION) return { ...step, conversion: [] };
+          if (step.type === FlowStepType.REMOVAL) return { ...step, removal: [] };
+          if (step.type === FlowStepType.VERIFY_REMOVAL) return { ...step, verify_removal: [] };
+          if (step.type === FlowStepType.AV_SCAN) return { ...step, avs: [] };
+          return step;
+        })
+      );
+    } else {
+      // Fill all selectable arrays with full master data
+      setWorkFlowData(
+        workFlowData.map(step => {
+          if (step.type === FlowStepType.CONVERSION) return { ...step, conversion: [...masterData.conversion] };
+          if (step.type === FlowStepType.REMOVAL) return { ...step, removal: [...masterData.removal] };
+          if (step.type === FlowStepType.VERIFY_REMOVAL) return { ...step, verify_removal: [...masterData.verify_removal] };
+          if (step.type === FlowStepType.AV_SCAN) return { ...step, avs: [...masterData.avs] };
+          return step;
+        })
+      );
     }
   };
 
@@ -168,6 +212,15 @@ export function WorkflowBuilder({
         </div>
 
         <div className="flex space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex items-center space-x-1"
+            disabled={isLockMode || workFlowData.length === 0}
+            onClick={handleGlobalSelectToggle}
+          >
+            {allSelectedGlobally ? "Clear All Options" : "Select All Options"}
+          </Button>
           <Button
             variant={isLockMode ? "default" : "outline"}
             size="sm"

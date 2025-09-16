@@ -178,22 +178,21 @@ export function TaskExecutionStep() {
                 : [],
             });
             break;
-          case FlowStepType.AV_SCAN:
+          case FlowStepType.AV_SCAN: {
+            const selectedAvs = Array.isArray(workFlow.avs) ? workFlow.avs : [];
             initialStageProgress.push({
               type: workFlow.type,
               status: StageStatus.PENDING,
               progress: 0,
               isOrganized: workFlow.isOrganized || false,
-              avScanData:
-                (workFlow.avs &&
-                  workFlow.avs.map((av) => ({
-                    avName: av,
-                    scanLogs: [],
-                    status: "PENDING",
-                  }))) ||
-                [],
+              avScanData: selectedAvs.map((av) => ({
+                avName: av,
+                scanLogs: [],
+                status: "PENDING",
+              })),
             });
             break;
+          }
         }
       }
       setStageProgress(initialStageProgress);

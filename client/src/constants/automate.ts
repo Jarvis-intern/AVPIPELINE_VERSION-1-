@@ -16,21 +16,13 @@ export const DEFAULT_CURRENT_STEP = 1;
 export const DEFAULT_NOTIFICATION_LEVEL = "all";
 
 // Get all format IDs with proper typing
-export const DEFAULT_CONVERSION_FORMATS = ["eml", "msg", "pst"];
-export const DEFAULT_VERIFY_REMOVAL_FORMATS = ["eml", "msg", "pst"];
+export const DEFAULT_CONVERSION_FORMATS: string[] = [];
+export const DEFAULT_VERIFY_REMOVAL_FORMATS: string[] = [];
 // Get all engine IDs with proper typing
-export const DEFAULT_AVS = ["Windows Defender", "Clam AV", "Eset"];
+export const DEFAULT_AVS: string[] = [];
 
 // Get all file type IDs with proper typing
-export const DEFAULT_FILE_TYPES = [
-  "bat",
-  "exe",
-  "js",
-  "vbs",
-  "ps1",
-  "cmd",
-  "sh",
-];
+export const DEFAULT_FILE_TYPES: string[] = [];
 
 // Default flow steps with all options selected
 export const DEFAULT_FLOW_STEPS: FlowStep[] = [
@@ -42,13 +34,13 @@ export const DEFAULT_FLOW_STEPS: FlowStep[] = [
   {
     id: 2,
     type: FlowStepType.CONVERSION,
-    conversion: DEFAULT_CONVERSION_FORMATS,
+    conversion: DEFAULT_CONVERSION_FORMATS, // start empty
     enabled: true,
   },
   {
     id: 3,
     type: FlowStepType.REMOVAL,
-    removal: DEFAULT_FILE_TYPES,
+    removal: DEFAULT_FILE_TYPES, // start empty
     enabled: false,
   },
   {
@@ -59,13 +51,13 @@ export const DEFAULT_FLOW_STEPS: FlowStep[] = [
   {
     id: 5,
     type: FlowStepType.VERIFY_REMOVAL,
-    verify_removal: DEFAULT_VERIFY_REMOVAL_FORMATS,
+    verify_removal: DEFAULT_VERIFY_REMOVAL_FORMATS, // start empty
     enabled: true,
   },
   {
     id: 6,
     type: FlowStepType.AV_SCAN,
-    avs: DEFAULT_AVS,
+    avs: DEFAULT_AVS, // start empty
     enabled: true,
   },
 ];

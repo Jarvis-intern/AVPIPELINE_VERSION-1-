@@ -16,7 +16,7 @@ interface WorkflowStepCardProps {
 }
 
 export function WorkflowStepCard({ step, index }: WorkflowStepCardProps) {
-  const { workFlowData, isLockMode, setConfigData, setAutoProceed } =
+  const { workFlowData, isLockMode, setConfigData, setAutoProceed, setSecureDelete, setKeepDeletionLog } =
     useAutomateStore();
   const { masterData } = useMasterDataStore();
 
@@ -165,7 +165,7 @@ export function WorkflowStepCard({ step, index }: WorkflowStepCardProps) {
                   size="sm"
                   className="h-7 text-xs"
                   onClick={() =>
-                    setConfigData(step.id, "conversion", masterData.conversion)
+                    setConfigData(step.id, "conversion", step.conversion?.length === masterData.conversion.length ? [] : masterData.conversion)
                   }
                   disabled={isLockMode}
                 >
@@ -194,7 +194,7 @@ export function WorkflowStepCard({ step, index }: WorkflowStepCardProps) {
                   variant="outline"
                   size="sm"
                   className="h-7 text-xs"
-                  onClick={() => setConfigData(step.id, "avs", masterData.avs)}
+                  onClick={() => setConfigData(step.id, "avs", step.avs?.length === masterData.avs.length ? [] : masterData.avs)}
                   disabled={isLockMode}
                 >
                   {getToggleAllButtonText("avs", masterData.avs)}
@@ -222,7 +222,7 @@ export function WorkflowStepCard({ step, index }: WorkflowStepCardProps) {
                   size="sm"
                   className="h-7 text-xs"
                   onClick={() =>
-                    setConfigData(step.id, "removal", masterData.removal)
+                    setConfigData(step.id, "removal", step.removal?.length === masterData.removal.length ? [] : masterData.removal)
                   }
                   disabled={isLockMode}
                 >
@@ -293,13 +293,8 @@ export function WorkflowStepCard({ step, index }: WorkflowStepCardProps) {
                 </Label>
                 <Switch
                   id={`secure-delete-${index}`}
-                  checked={step.secureDelete !== false}
-                  onCheckedChange={(checked) => {
-                    if (!isLockMode) {
-                      // Update the step config directly
-                      step.secureDelete = checked;
-                    }
-                  }}
+                  checked={!!step.secureDelete}
+                  onCheckedChange={(checked) => !isLockMode && setSecureDelete(step.id, checked)}
                   disabled={isLockMode}
                 />
               </div>
@@ -312,13 +307,8 @@ export function WorkflowStepCard({ step, index }: WorkflowStepCardProps) {
                 </Label>
                 <Switch
                   id={`keep-log-${index}`}
-                  checked={step.keepDeletionLog !== false}
-                  onCheckedChange={(checked) => {
-                    if (!isLockMode) {
-                      // Update the step config directly
-                      step.keepDeletionLog = checked;
-                    }
-                  }}
+                  checked={!!step.keepDeletionLog}
+                  onCheckedChange={(checked) => !isLockMode && setKeepDeletionLog(step.id, checked)}
                   disabled={isLockMode}
                 />
               </div>
@@ -331,11 +321,7 @@ export function WorkflowStepCard({ step, index }: WorkflowStepCardProps) {
                   size="sm"
                   className="h-7 text-xs"
                   onClick={() =>
-                    setConfigData(
-                      step.id,
-                      "verify_removal",
-                      masterData.verify_removal
-                    )
+                    setConfigData(step.id, "verify_removal", step.verify_removal?.length === masterData.verify_removal.length ? [] : masterData.verify_removal)
                   }
                   disabled={isLockMode}
                 >
