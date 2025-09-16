@@ -23,6 +23,12 @@ func RegisterRoutes(router *gin.Engine) {
 		api.POST("/task-progress", handlers.CreateOrUpdateTaskProgress)
 		api.GET("/task-progress/:task_id", handlers.GetTaskProgress)
 
+		// session / cookie utilities
+		session := api.Group("/session")
+		{
+			session.POST("/clear-task-cookie", handlers.ClearTaskCookie)
+		}
+
 		// *** FIX STARTS HERE: Add conversion route ***
 		conversionGroup := api.Group("/convert")
 		{
