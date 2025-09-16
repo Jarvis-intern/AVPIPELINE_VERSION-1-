@@ -35,5 +35,8 @@ func RegisterRoutes(router *gin.Engine) {
 			conversionGroup.POST("/upload", handlers.HandleConversionUpload)
 		}
 		// *** FIX ENDS HERE ***
+
+		// dashboard activity aggregate
+		api.GET("/dashboard/activity", handlers.GetDashboardActivity)
 	}
 }

@@ -28,6 +28,7 @@ import (
 	conv "gitlab.com/magnetite1/av-pipeline/server/interfaces"
 	"gitlab.com/magnetite1/av-pipeline/server/models"
 	"gitlab.com/magnetite1/av-pipeline/server/sockets"
+	"gitlab.com/magnetite1/av-pipeline/server/logger"
 )
 
 // ConversionTypeResult struct
@@ -263,6 +264,31 @@ func processConversion(task conv.ConversionTask, userID string) *conv.Conversion
 		"failed_files":    result.FailedFiles,
 		"task_id":         result.TaskID,
 	})
+
+	// Log file conversion activities
+	for _, filePath := range result.ConvertedFiles {
+		logger.AppendActivity(logger.ActivityRecord{
+			Type:   "conversion_file",
+			TaskID: task.TaskID,
+			File:   filePath,
+			Status: "converted",
+			Meta: map[string]any{
+				"conversion_type": task.ConversionType,
+			},
+		})
+	}
+	for _, filePath := range result.FailedFiles {
+		logger.AppendActivity(logger.ActivityRecord{
+			Type:   "conversion_file",
+			TaskID: task.TaskID,
+			File:   filePath,
+			Status: "failed",
+			Meta: map[string]any{
+				"conversion_type": task.ConversionType,
+			},
+		})
+	}
+
 	return result
 }
 
@@ -351,9 +377,13 @@ func convertAnyToHTML(task conv.ConversionTask, userID string) (*conv.Conversion
 		if ok {
 			res.TotalConverted++
 			res.ConvertedFiles = append(res.ConvertedFiles, outPaths...)
+			for _, p := range outPaths {
+				_ = logger.AppendActivity(logger.ActivityRecord{TS: time.Now().Format(time.RFC3339), Type: "conversion_file", File: p, Status: "converted"})
+			}
 		} else {
 			res.TotalFailed++
 			res.FailedFiles = append(res.FailedFiles, filePath)
+			_ = logger.AppendActivity(logger.ActivityRecord{TS: time.Now().Format(time.RFC3339), Type: "conversion_file", File: filePath, Status: "failed"})
 		}
 
 		sockets.EmitToUser(userID, "file_progress", map[string]any{
@@ -366,7 +396,6 @@ func convertAnyToHTML(task conv.ConversionTask, userID string) (*conv.Conversion
 		})
 	}
 
-	res.Status = "completed"
 	res.EndTime = time.Now()
 	return res, nil
 }
@@ -502,6 +531,17 @@ func HandleAutomationConversion(client *sockets.Client, data map[string]any) {
 		"end_time": time.Now().Format(time.RFC3339),
 		"task_id":  taskID,
 	})
+
+	// Log the completion of the conversion stage
+	logger.AppendActivity(logger.ActivityRecord{
+		Type:   "conversion_stage",
+		TaskID: taskID,
+		Status: "done",
+		Meta: map[string]any{
+			"path": path,
+		},
+	})
+
 	SignalStageComplete(taskID, "CONVERSION")
 }
 func convertMBOXToHTML(mboxPath, outputBase string) (bool, []string, error) {
@@ -1129,9 +1169,11 @@ func convertEML(task conv.ConversionTask, userID string) (*conv.ConversionResult
 			if success {
 				converted++
 				phaseConvertedFiles = append(phaseConvertedFiles, htmlPath)
+				_ = logger.AppendActivity(logger.ActivityRecord{TS: time.Now().Format(time.RFC3339), Type: "conversion_file", File: htmlPath, Status: "converted"})
 			} else {
 				failed++
 				phaseFailedFiles = append(phaseFailedFiles, emlFile)
+				_ = logger.AppendActivity(logger.ActivityRecord{TS: time.Now().Format(time.RFC3339), Type: "conversion_file", File: emlFile, Status: "failed"})
 				if err != nil {
 					log.Printf("Failed to convert %s: %v", emlFile, err)
 				}
@@ -1656,10 +1698,14 @@ func convertMSG(task conv.ConversionTask, userID string) (*conv.ConversionResult
 				"task_id":         task.TaskID,
 			}, userID)
 			result.FailedFiles = append(result.FailedFiles, msgFile)
+			_ = logger.AppendActivity(logger.ActivityRecord{TS: time.Now().Format(time.RFC3339), Type: "conversion_file", File: msgFile, Status: "failed"})
 			continue
 		}
 
 		result.ConvertedFiles = append(result.ConvertedFiles, pyResult.ConvertedFiles...)
+		for _, p := range pyResult.ConvertedFiles {
+			_ = logger.AppendActivity(logger.ActivityRecord{TS: time.Now().Format(time.RFC3339), Type: "conversion_file", File: p, Status: "converted"})
+		}
 		emitEvent("file_progress", map[string]interface{}{
 			"conversion_type": "msg",
 			"current_file":    msgFile,
@@ -1837,16 +1883,22 @@ func convertPST(task conv.ConversionTask, userID string) (*conv.ConversionResult
 			if ok2, htmls, err2 := convertPSTViaPffexport(pstPath, task.OutputPath); err2 == nil && ok2 && len(htmls) > 0 {
 				converted++
 				result.ConvertedFiles = append(result.ConvertedFiles, htmls...)
+				for _, p := range htmls {
+					_ = logger.AppendActivity(logger.ActivityRecord{TS: time.Now().Format(time.RFC3339), Type: "conversion_file", File: p, Status: "converted"})
+				}
 			} else {
 				failed++
 				result.FailedFiles = append(result.FailedFiles, pstPath)
+				_ = logger.AppendActivity(logger.ActivityRecord{TS: time.Now().Format(time.RFC3339), Type: "conversion_file", File: pstPath, Status: "failed"})
 			}
 		} else {
 			converted++
 			if outPath != "" {
 				result.ConvertedFiles = append(result.ConvertedFiles, outPath)
+				_ = logger.AppendActivity(logger.ActivityRecord{TS: time.Now().Format(time.RFC3339), Type: "conversion_file", File: outPath, Status: "converted"})
 			} else {
 				result.ConvertedFiles = append(result.ConvertedFiles, pstPath)
+				_ = logger.AppendActivity(logger.ActivityRecord{TS: time.Now().Format(time.RFC3339), Type: "conversion_file", File: pstPath, Status: "converted"})
 			}
 		}
 
@@ -1944,9 +1996,13 @@ func convertMBOX(task conv.ConversionTask, userID string) (*conv.ConversionResul
 		if success {
 			converted++
 			result.ConvertedFiles = append(result.ConvertedFiles, htmlPaths...)
+			for _, p := range htmlPaths {
+				_ = logger.AppendActivity(logger.ActivityRecord{TS: time.Now().Format(time.RFC3339), Type: "conversion_file", File: p, Status: "converted"})
+			}
 		} else {
 			failed++
 			result.FailedFiles = append(result.FailedFiles, mboxFile)
+			_ = logger.AppendActivity(logger.ActivityRecord{TS: time.Now().Format(time.RFC3339), Type: "conversion_file", File: mboxFile, Status: "failed"})
 			if err != nil {
 				log.Printf("Failed to convert %s: %v", mboxFile, err)
 			}

@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"context"
+	"strings"
 	"sync"
 	"time"
 
@@ -15,6 +16,7 @@ import (
 	"gitlab.com/magnetite1/av-pipeline/server/models"
 	"gitlab.com/magnetite1/av-pipeline/server/proto"
 	"gitlab.com/magnetite1/av-pipeline/server/sockets"
+	"gitlab.com/magnetite1/av-pipeline/server/logger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -382,6 +384,17 @@ func handleAutomationScanning(client *sockets.Client, data map[string]any) {
 					"progress":  logEntry.GetProgress(),
 				}
 				sockets.EmitToUser(client.UserID, "av_scan_log", logMap)
+				// Activity log (only if file_path present)
+				if fp := logEntry.GetFilePath(); fp != "" {
+					logger.AppendActivity(logger.ActivityRecord{
+						Type:   "scan_file",
+						TaskID: taskId,
+						File:   fp,
+						AVName: avData.Name,
+						Status: "scanned",
+						Msg:    logEntry.GetContent(),
+					})
+				}
 				// Buffer log for interval DB save
 				logBufferMutex.Lock()
 				logBuffer = append(logBuffer, logEntry)
@@ -450,11 +463,11 @@ func handleAutomationScanning(client *sockets.Client, data map[string]any) {
 								sockets.EmitToUser(client.UserID, "av_scan_done", doneEvent)
 
 								// NEW: dashboard activity + aggregate (lightweight; replace with real counters)
-								EmitActivity(ActivityItem{
-									Type: "scan",
-									Title: "AV Scan Finished",
-									Desc:  avData.Name + " completed",
-									Time:  time.Now().Format(time.RFC3339),
+								logger.AppendActivity(logger.ActivityRecord{
+									Type:   "scan_engine",
+									TaskID: taskId,
+									AVName: avData.Name,
+									Status: "done",
 								})
 								// (Optional) if you can compute aggregated stats here:
 								// EmitScanStats(totalFiles, scannedSoFar, infectedSoFar, inProgressCount)
@@ -505,12 +518,19 @@ func handleAutomationScanning(client *sockets.Client, data map[string]any) {
 		})
 
 		// Dashboard activity emission for overall completion
-		EmitActivity(ActivityItem{
-			Type:  "scan",
-			Title: "All AV Scans Complete",
-			Desc:  fmt.Sprintf("Task %s AV_SCAN stage finished", taskId),
-			Time:  time.Now().Format(time.RFC3339),
+		logger.AppendActivity(logger.ActivityRecord{
+			Type:   "scan_stage",
+			TaskID: taskId,
+			Status: "done",
 		})
 		SignalStageComplete(taskId, "AV_SCAN")
 	}()
+}
+
+// containsCaseInsensitive reports whether substr appears in s case-insensitively.
+func containsCaseInsensitive(s, substr string) bool {
+	if substr == "" { return true }
+	ls := strings.ToLower(s)
+	lsub := strings.ToLower(substr)
+	return strings.Contains(ls, lsub)
 }

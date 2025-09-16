@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gitlab.com/magnetite1/av-pipeline/server/config"
 	"gitlab.com/magnetite1/av-pipeline/server/db"
+	"gitlab.com/magnetite1/av-pipeline/server/logger"
 	"gitlab.com/magnetite1/av-pipeline/server/handlers"
 	"gitlab.com/magnetite1/av-pipeline/server/routes"
 	"gitlab.com/magnetite1/av-pipeline/server/sockets"
@@ -43,6 +44,13 @@ func main() {
 	routes.RegisterRoutes(r)
 	// routes.RegisterWebsocketRoutes(r)
 	r.GET("/ws", handlers.WebSocketHandler)
+
+	if err := logger.InitActivityLogger(); err != nil {
+		log.Printf("Failed to init activity logger: %v", err)
+	}
+
+	// After router creation:
+	handlers.RegisterActivityRoutes(r)
 
 	log.Println("Server starting on :8000")
 	r.Run(":8000")
