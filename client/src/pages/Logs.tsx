@@ -1,144 +1,138 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, CheckCircle, AlertCircle, Shield, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
+import socket from "@/lib/socket";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+
+type ActivityLogEntry = {
+  ts: string;
+  type: string;
+  status?: string;
+  file?: string;
+  av_name?: string;
+  task_id?: string;
+  message?: string;
+};
 
 export function Logs() {
-  // Sample log data
-  const sampleLogs = [
-    { 
-      id: 1, 
-      filename: 'document.docx', 
-      scanDate: '2024-04-09 14:32', 
-      status: 'clean', 
-      engine: 'Windows Defender',
-      details: 'No threats detected'
-    },
-    { 
-      id: 2, 
-      filename: 'invoice.pdf', 
-      scanDate: '2024-04-09 13:45', 
-      status: 'clean', 
-      engine: 'ClamAV',
-      details: 'No threats detected'
-    },
-    { 
-      id: 3, 
-      filename: 'attachment.exe', 
-      scanDate: '2024-04-09 11:28', 
-      status: 'malicious', 
-      engine: 'ESET',
-      details: 'Trojan detected: Win32/Malware.ABC'
-    },
-    { 
-      id: 4, 
-      filename: 'download.zip', 
-      scanDate: '2024-04-08 16:04', 
-      status: 'suspicious', 
-      engine: 'Trend Micro',
-      details: 'Suspicious behavior detected'
-    },
-    { 
-      id: 5, 
-      filename: 'report.xlsx', 
-      scanDate: '2024-04-08 09:12', 
-      status: 'clean', 
-      engine: 'Windows Defender',
-      details: 'No threats detected'
-    },
-  ];
+  const [items, setItems] = useState<ActivityLogEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [ops, setOps] = useState<any[]>([]);
+  const loadOps = async () => {
+    try {
+  const res = await api.get<any>("/api/operation-logs?limit=300");
+      setOps(res.items || []);
+    } catch {}
+  };
 
-  const getStatusBadge = (status: string) => {
-    switch(status) {
-      case 'clean':
-        return (
-          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800">
-            <CheckCircle className="h-3 w-3 mr-1" /> Clean
-          </Badge>
-        );
-      case 'malicious':
-        return (
-          <Badge variant="destructive" className="bg-red-50 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800">
-            <AlertCircle className="h-3 w-3 mr-1" /> Malicious
-          </Badge>
-        );
-      case 'suspicious':
-        return (
-          <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800">
-            <Shield className="h-3 w-3 mr-1" /> Suspicious
-          </Badge>
-        );
-      default:
-        return (
-          <Badge variant="outline" className="bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
-            <Clock className="h-3 w-3 mr-1" /> Unknown
-          </Badge>
-        );
+  const load = async () => {
+    setLoading(true);
+    try {
+  const res = await api.get<any>("/api/activity/recent?limit=200");
+      setItems(res.items || []);
+    } catch {
+      /* ignore */
+    } finally {
+      setLoading(false);
     }
   };
-  
+
+  useEffect(() => {
+    load();
+    loadOps();
+    const handleRealtime = (data: any) => {
+      if (data.type && data.ts) {
+        setItems(prev => [data as ActivityLogEntry, ...prev].slice(0, 500));
+      }
+    };
+    socket.on("activity_event", handleRealtime);
+    return () => {
+      socket.off("activity_event", handleRealtime);
+    };
+  }, []);
+
+  // Simple renderer for ops
+  const renderOpRow = (r: any, i: number) => (
+    <tr key={i} className="hover:bg-slate-50">
+      <td className="px-3 py-1 text-xs">{new Date(r.ts).toLocaleTimeString()}</td>
+      <td className="px-3 py-1 text-xs">{r.kind}</td>
+      <td className="px-3 py-1 text-xs truncate max-w-[220px]">{r.file || "-"}</td>
+      <td className="px-3 py-1 text-xs">{r.status || r.result || r.action || "-"}</td>
+      <td className="px-3 py-1 text-xs">{r.conversion_type || r.av_name || r.stage || "-"}</td>
+    </tr>
+  );
+
+  const renderRow = (r: ActivityLogEntry, i: number) => (
+    <tr key={i} className="hover:bg-slate-50">
+      <td className="px-4 py-1 text-xs">{new Date(r.ts).toLocaleTimeString()}</td>
+      <td className="px-4 py-1 text-xs capitalize">{r.type}</td>
+      <td className="px-4 py-1 text-xs">{r.status || "-"}</td>
+      <td className="px-4 py-1 text-xs truncate max-w-[260px]">{r.file || r.message || "-"}</td>
+      <td className="px-4 py-1 text-xs">{r.av_name || r.task_id || "-"}</td>
+    </tr>
+  );
+
   return (
     <div className="container mx-auto py-6 px-4 md:px-6 max-w-7xl">
-      <h1 className="text-2xl font-bold mb-6">Scan Logs</h1>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Scan Results</CardTitle>
-          <CardDescription>
-            Review the results of recent file scans
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <h1 className="text-2xl font-bold mb-4">Logs</h1>
+      <Tabs defaultValue="activity">
+        <TabsList>
+          <TabsTrigger value="activity">Activity</TabsTrigger>
+          <TabsTrigger value="operations">Operations</TabsTrigger>
+        </TabsList>
+        <TabsContent value="activity">
           <div className="border rounded-lg overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700">
+            <div className="flex items-center justify-between px-4 py-2 bg-slate-50 dark:bg-slate-800/40">
+              <span className="text-sm font-medium">Recent Events</span>
+              <button onClick={load} className="text-xs text-blue-600">Refresh</button>
+            </div>
+            {loading ? (
+              <div className="p-4 text-sm text-slate-500">Loading...</div>
+            ) : items.length === 0 ? (
+              <div className="p-4 text-sm text-slate-500">No activity yet.</div>
+            ) : (
+              <table className="w-full text-left">
+                <thead className="text-[11px] uppercase bg-slate-100 dark:bg-slate-800/60">
+                  <tr>
+                    <th className="px-4 py-2">Time</th>
+                    <th className="px-4 py-2">Type</th>
+                    <th className="px-4 py-2">Status</th>
+                    <th className="px-4 py-2">File / Message</th>
+                    <th className="px-4 py-2">AV / Task</th>
+                  </tr>
+                </thead>
+                <tbody className="text-xs">
+                  {items.map(renderRow)}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </TabsContent>
+        <TabsContent value="operations">
+          <div className="border rounded-lg overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-2 bg-slate-50">
+              <span className="text-sm font-medium">Operation Events</span>
+              <button onClick={loadOps} className="text-xs text-blue-600">Refresh</button>
+            </div>
+            <table className="w-full text-left">
+              <thead className="text-[11px] uppercase bg-slate-100">
                 <tr>
-                  <th className="text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider px-6 py-3">
-                    File
-                  </th>
-                  <th className="text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider px-6 py-3">
-                    Date
-                  </th>
-                  <th className="text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider px-6 py-3">
-                    Engine
-                  </th>
-                  <th className="text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider px-6 py-3">
-                    Status
-                  </th>
-                  <th className="text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider px-6 py-3">
-                    Details
-                  </th>
+                  <th className="px-3 py-1">Time</th>
+                  <th className="px-3 py-1">Kind</th>
+                  <th className="px-3 py-1">File</th>
+                  <th className="px-3 py-1">Status</th>
+                  <th className="px-3 py-1">Meta</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {sampleLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <FileText className="h-4 w-4 text-slate-400 mr-2" />
-                        <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
-                          {log.filename}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                      {log.scanDate}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                      {log.engine}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {getStatusBadge(log.status)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                      {log.details}
-                    </td>
-                  </tr>
-                ))}
+              <tbody className="text-xs">
+                {ops.map(renderOpRow)}
               </tbody>
             </table>
           </div>
-        </CardContent>
-      </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
-} 
+}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Files,
   CheckCircle,
@@ -18,8 +19,10 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api";
+import socket from "@/lib/socket";
 
 export function Dashboard() {
+  const navigate = useNavigate();
   // State for dashboard data
   const [conversionStats, setConversionStats] = useState([
     { label: "EML Files", value: "-", icon: Mail, color: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300" },
@@ -42,56 +45,105 @@ export function Dashboard() {
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
 
   useEffect(() => {
-    async function fetchDashboardData() {
+    let cancelled = false;
+    (async () => {
       try {
-        // System status
-        const sys = await api.get<any>("/system-info/system-usage");
-        setSystemStatus({
-          cpu: sys.cpu?.cpu_usage ?? 0,
-          memory: sys.memory?.used_memory && sys.memory?.total_memory ? Math.round((sys.memory.used_memory / sys.memory.total_memory) * 100) : 0,
-          disk: sys.disk?.used_disk && sys.disk?.total_disk ? Math.round((sys.disk.used_disk / sys.disk.total_disk) * 100) : 0,
-          service: "Running",
-        });
+  // NOTE: backend mounts these under /api; ensure prefix included
+  const sys = await api.get<any>("/api/system-info/system-usage");
+        if (!cancelled) {
+          setSystemStatus({
+            cpu: sys.cpu?.cpu_usage ?? 0,
+            memory: sys.memory?.used_memory && sys.memory?.total_memory ? Math.round((sys.memory.used_memory / sys.memory.total_memory) * 100) : 0,
+            disk: sys.disk?.used_disk && sys.disk?.total_disk ? Math.round((sys.disk.used_disk / sys.disk.total_disk) * 100) : 0,
+            service: "Running",
+          });
+        }
 
-        // Conversion stats (example: get all conversions and aggregate)
-        const conversions = await api.get<any[]>("/conversion");
-        setConversionStats([
-          { ...conversionStats[0], value: conversions.filter((c) => c.selected_format === "eml").length.toString() },
-          { ...conversionStats[1], value: conversions.filter((c) => c.selected_format === "msg").length.toString() },
-          { ...conversionStats[2], value: conversions.filter((c) => c.selected_format === "pst").length.toString() },
-          { ...conversionStats[3], value: conversions.filter((c) => c.selected_format === "docx" || c.selected_format === "doc").length.toString() },
-        ]);
-
-        // Security stats (example: get all scan details and aggregate)
-        const scans = await api.get<any[]>("/scan-details");
-        setStats([
-          { ...stats[0], value: scans.reduce((acc, s) => acc + (s.files_scanned_count || 0), 0).toString() },
-          { ...stats[1], value: scans.length.toString() },
-          { ...stats[2], value: scans.reduce((acc, s) => acc + (s.threats_files_count || 0), 0).toString() },
-          { ...stats[3], value: scans.filter((s) => s.status === "IN_PROGRESS").length.toString() },
-        ]);
-
-        // Recent activity (example: show last 3 scans and conversions)
-        const recent = [
-          ...scans.slice(-2).map((s) => ({
-            type: "scan",
-            title: "Scan completed",
-            desc: `${s.files_scanned_count} files scanned, ${s.threats_files_count} threats detected`,
-            time: s.scan_end_time || s.time_of_scan_completion,
-          })),
-          ...conversions.slice(-1).map((c) => ({
-            type: "conversion",
-            title: "Conversion completed",
-            desc: `${c.converted_files || 0} files converted to ${c.selected_format?.toUpperCase() || "unknown"} format`,
-            time: c.updated_at,
-          })),
-        ];
-        setRecentActivity(recent.reverse());
-      } catch (e) {
-        // handle error, optionally set fallback UI
+  const activity = await api.get<any>("/api/dashboard/activity");
+        if (!cancelled) {
+          const counts = activity.counts || {};
+          setStats((prev) => {
+            const copy = [...prev];
+            copy[0] = { ...copy[0], value: (counts.scan_files ?? 0).toString() };
+            copy[1] = { ...copy[1], value: (counts.scan_files ?? 0).toString() };
+            copy[2] = { ...copy[2], value: (counts.scan_infected ?? 0).toString() };
+            copy[3] = { ...copy[3], value: "-" };
+            return copy;
+          });
+          setConversionStats((prev) => {
+            const copy = [...prev];
+            copy[0] = { ...copy[0], value: (counts.converted_files ?? 0).toString() };
+            return copy;
+          });
+          const mapped = (activity.recent || []).map((r: any) => ({
+            type: r.type === 'scan_file' ? 'scan' : 'conversion',
+            title: r.type === 'scan_file'
+              ? `Scanned: ${r.file ? r.file.split('/').pop() : ''}`
+              : `Converted: ${r.file ? r.file.split('/').pop() : ''}`,
+            desc: r.status ? `Status: ${r.status}` : '',
+            time: r.ts,
+          }));
+          setRecentActivity(mapped);
+        }
+      } catch (err) {
+        // Optionally log
+        // console.error('Dashboard load failed', err);
       }
-    }
-    fetchDashboardData();
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  // Realtime subscriptions
+  useEffect(() => {
+    const handleSystem = (data: any) => {
+      setSystemStatus({
+        cpu: data.cpu ?? 0,
+        memory: data.memory ?? 0,
+        disk: data.disk ?? 0,
+        service: data.service || "Running",
+      });
+    };
+
+    const handleScan = (data: any) => {
+      setStats((prev) => {
+        // prev order: Total Files, Scanned, Infected, In Progress
+        const copy = [...prev];
+        copy[0] = { ...copy[0], value: (data.total_files ?? 0).toString() };
+        copy[1] = { ...copy[1], value: (data.scanned ?? 0).toString() };
+        copy[2] = { ...copy[2], value: (data.infected ?? 0).toString() };
+        copy[3] = { ...copy[3], value: (data.in_progress ?? 0).toString() };
+        return copy;
+      });
+    };
+
+    const handleConversion = (data: any) => {
+      setConversionStats((prev) => {
+        const copy = [...prev];
+        copy[0] = { ...copy[0], value: (data.eml ?? 0).toString() };
+        copy[1] = { ...copy[1], value: (data.msg ?? 0).toString() };
+        copy[2] = { ...copy[2], value: (data.pst ?? 0).toString() };
+        copy[3] = { ...copy[3], value: (data.word ?? 0).toString() };
+        return copy;
+      });
+    };
+
+    const handleActivity = (data: any) => {
+      if (Array.isArray(data.items)) {
+        setRecentActivity(data.items);
+      }
+    };
+
+    socket.on("dashboard_system_status", handleSystem);
+    socket.on("dashboard_scan_stats", handleScan);
+    socket.on("dashboard_conversion_stats", handleConversion);
+    socket.on("dashboard_recent_activity", handleActivity);
+
+    return () => {
+      socket.off("dashboard_system_status", handleSystem);
+      socket.off("dashboard_scan_stats", handleScan);
+      socket.off("dashboard_conversion_stats", handleConversion);
+      socket.off("dashboard_recent_activity", handleActivity);
+    };
   }, []);
 
   return (
@@ -104,7 +156,7 @@ export function Dashboard() {
             <div>
               <CardTitle className="text-lg font-semibold text-slate-800 dark:text-white">File Conversion</CardTitle>
             </div>
-            <Button variant="outline" size="sm" className="h-8 px-3 text-xs gap-1.5">
+            <Button variant="outline" size="sm" className="h-8 px-3 text-xs gap-1.5" onClick={() => navigate("/convert")}> 
               <ArrowRight className="h-3.5 w-3.5" />
               <span>View Details</span>
             </Button>
@@ -123,7 +175,7 @@ export function Dashboard() {
             </div>
             <div className="px-4 py-3 flex justify-between items-center border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
               <div className="text-sm text-slate-500 dark:text-slate-400">Last conversion: --</div>
-              <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 dark:text-blue-400 font-medium">
+              <Button variant="link" size="sm" className="p-0 h-auto text-blue-600 dark:text-blue-400 font-medium" onClick={() => navigate("/convert")}> 
                 Convert New Files
               </Button>
             </div>
@@ -136,7 +188,7 @@ export function Dashboard() {
             <div>
               <CardTitle className="text-lg font-semibold text-slate-800 dark:text-white">Security Status</CardTitle>
             </div>
-            <Button variant="outline" size="sm" className="h-8 px-3 text-xs gap-1.5">
+            <Button variant="outline" size="sm" className="h-8 px-3 text-xs gap-1.5" onClick={() => navigate("/scan")}> 
               <ArrowRight className="h-3.5 w-3.5" />
               <span>View Details</span>
             </Button>
@@ -155,7 +207,7 @@ export function Dashboard() {
             </div>
             <div className="px-4 py-3 flex justify-between items-center border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
               <div className="text-sm text-slate-500 dark:text-slate-400">Last scan: --</div>
-              <Button variant="link" size="sm" className="p-0 h-auto text-green-600 dark:text-green-400 font-medium">
+              <Button variant="link" size="sm" className="p-0 h-auto text-green-600 dark:text-green-400 font-medium" onClick={() => navigate("/scan")}> 
                 Start New Scan
               </Button>
             </div>
@@ -208,7 +260,39 @@ export function Dashboard() {
             <div>
               <CardTitle className="text-lg font-semibold text-slate-800 dark:text-white">Recent Activity</CardTitle>
             </div>
-            <Button variant="ghost" size="sm" className="gap-1.5 text-slate-600 dark:text-slate-300">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-1.5 text-slate-600 dark:text-slate-300"
+              onClick={async () => {
+                try {
+                  const activity = await api.get<any>("/api/dashboard/activity");
+                  const counts = activity.counts || {};
+                  setStats((prev) => {
+                    const copy = [...prev];
+                    copy[0] = { ...copy[0], value: (counts.scan_files ?? 0).toString() };
+                    copy[1] = { ...copy[1], value: (counts.scan_files ?? 0).toString() };
+                    copy[2] = { ...copy[2], value: (counts.scan_infected ?? 0).toString() };
+                    copy[3] = { ...copy[3], value: '-' };
+                    return copy;
+                  });
+                  setConversionStats((prev) => {
+                    const copy = [...prev];
+                    copy[0] = { ...copy[0], value: (counts.converted_files ?? 0).toString() };
+                    return copy;
+                  });
+                  const mapped = (activity.recent || []).map((r: any) => ({
+                    type: r.type === 'scan_file' ? 'scan' : 'conversion',
+                    title: r.type === 'scan_file'
+                      ? `Scanned: ${r.file ? r.file.split('/').pop() : ''}`
+                      : `Converted: ${r.file ? r.file.split('/').pop() : ''}`,
+                    desc: r.status ? `Status: ${r.status}` : '',
+                    time: r.ts,
+                  }));
+                  setRecentActivity(mapped);
+                } catch {}
+              }}
+            >
               <RefreshCw className="h-3.5 w-3.5" />
               <span>Refresh</span>
             </Button>
@@ -246,4 +330,4 @@ export function Dashboard() {
       </div>
     </div>
   );
-} 
+}

@@ -45,7 +45,7 @@ export function Dashboard() {
     async function fetchDashboardData() {
       try {
         // System status
-        const sys = await api.get<any>("/system-info/system-usage");
+  const sys = await api.get<any>("/api/system-info/system-usage");
         setSystemStatus({
           cpu: sys.cpu?.cpu_usage ?? 0,
           memory: sys.memory?.used_memory && sys.memory?.total_memory ? Math.round((sys.memory.used_memory / sys.memory.total_memory) * 100) : 0,
@@ -54,7 +54,7 @@ export function Dashboard() {
         });
 
         // Conversion stats (example: get all conversions and aggregate)
-        const conversions = await api.get<any[]>("/conversion");
+  const conversions = await api.get<any[]>("/api/conversion");
         // You may need to adjust this aggregation based on your backend data structure
         setConversionStats([
           { ...conversionStats[0], value: conversions.filter((c) => c.selected_format === "eml").length.toString() },
@@ -64,7 +64,7 @@ export function Dashboard() {
         ]);
 
         // Security stats (example: get all scan details and aggregate)
-        const scans = await api.get<any[]>("/scan-details");
+  const scans = await api.get<any[]>("/api/scan-details");
         setStats([
           { ...stats[0], value: scans.reduce((acc, s) => acc + (s.files_scanned_count || 0), 0).toString() },
           { ...stats[1], value: scans.length.toString() },
