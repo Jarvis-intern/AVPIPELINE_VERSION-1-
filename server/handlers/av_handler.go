@@ -394,6 +394,15 @@ func handleAutomationScanning(client *sockets.Client, data map[string]any) {
 						Status: "scanned",
 						Msg:    logEntry.GetContent(),
 					})
+					// Determine result heuristically
+					result := "clean"
+					threat := ""
+					up := strings.ToUpper(logEntry.GetContent())
+					if strings.Contains(up, "INFECT") || strings.Contains(up, "FOUND") {
+						result = "infected"
+						threat = logEntry.GetContent()
+					}
+					logger.LogScan(taskId, fp, avData.Name, result, threat)
 				}
 				// Buffer log for interval DB save
 				logBufferMutex.Lock()

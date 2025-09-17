@@ -337,6 +337,10 @@ func convertAnyToHTML(task conv.ConversionTask, userID string) (*conv.Conversion
 		"total_files": res.TotalFiles,
 	})
 
+	if res.TotalFiles == 0 {
+		logger.LogConversionSummary(task.TaskID, 0, 0, 0, "no_files", task.ConversionType)
+	}
+
 	for _, filePath := range files {
 		ext := strings.ToLower(filepath.Ext(filePath))
 		var ok bool
@@ -378,12 +382,10 @@ func convertAnyToHTML(task conv.ConversionTask, userID string) (*conv.Conversion
 			res.TotalConverted++
 			res.ConvertedFiles = append(res.ConvertedFiles, outPaths...)
 			for _, p := range outPaths {
-				_ = logger.AppendActivity(logger.ActivityRecord{TS: time.Now().Format(time.RFC3339), Type: "conversion_file", File: p, Status: "converted"})
+				logger.LogConversion(task.TaskID, p, ext, ".html", "success", task.ConversionType)
 			}
 		} else {
-			res.TotalFailed++
-			res.FailedFiles = append(res.FailedFiles, filePath)
-			_ = logger.AppendActivity(logger.ActivityRecord{TS: time.Now().Format(time.RFC3339), Type: "conversion_file", File: filePath, Status: "failed"})
+			logger.LogConversion(task.TaskID, filePath, ext, ".html", "failed", task.ConversionType)
 		}
 
 		sockets.EmitToUser(userID, "file_progress", map[string]any{
@@ -397,6 +399,8 @@ func convertAnyToHTML(task conv.ConversionTask, userID string) (*conv.Conversion
 	}
 
 	res.EndTime = time.Now()
+	// Final summary record for analytics
+	logger.LogConversionSummary(task.TaskID, res.TotalFiles, res.TotalConverted, res.TotalFailed, "completed", task.ConversionType)
 	return res, nil
 }
 

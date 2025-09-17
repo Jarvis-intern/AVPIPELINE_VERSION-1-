@@ -2,3 +2,106 @@
 {"ts":"2025-09-16T11:55:30+05:30","type":"conversion_file","file":"/tmp/av-pipeline-uploads/conversion_1758003930852956646/Converted_EML/2.html","status":"converted"}
 {"ts":"2025-09-16T06:25:30Z","type":"conversion_file","task_id":"conversion_1758003930852956646","file":"/tmp/av-pipeline-uploads/conversion_1758003930852956646/Converted_EML/1.html","status":"converted","meta":{"conversion_type":"eml"}}
 {"ts":"2025-09-16T06:25:30Z","type":"conversion_file","task_id":"conversion_1758003930852956646","file":"/tmp/av-pipeline-uploads/conversion_1758003930852956646/Converted_EML/2.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-16T12:24:58+05:30","type":"conversion_file","file":"/tmp/av-pipeline-uploads/conversion_1758005698735588382/Converted_EML/1.html","status":"converted"}
+{"ts":"2025-09-16T12:24:58+05:30","type":"conversion_file","file":"/tmp/av-pipeline-uploads/conversion_1758005698735588382/Converted_EML/2.html","status":"converted"}
+{"ts":"2025-09-16T06:54:58Z","type":"conversion_file","task_id":"conversion_1758005698735588382","file":"/tmp/av-pipeline-uploads/conversion_1758005698735588382/Converted_EML/1.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-16T06:54:58Z","type":"conversion_file","task_id":"conversion_1758005698735588382","file":"/tmp/av-pipeline-uploads/conversion_1758005698735588382/Converted_EML/2.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-16T12:33:01+05:30","type":"conversion_file","file":"/tmp/av-pipeline-uploads/conversion_1758006181738424395/Converted_EML/1.html","status":"converted"}
+{"ts":"2025-09-16T12:33:01+05:30","type":"conversion_file","file":"/tmp/av-pipeline-uploads/conversion_1758006181738424395/Converted_EML/2.html","status":"converted"}
+{"ts":"2025-09-16T07:03:01Z","type":"conversion_file","task_id":"conversion_1758006181738424395","file":"/tmp/av-pipeline-uploads/conversion_1758006181738424395/Converted_EML/1.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-16T07:03:01Z","type":"conversion_file","task_id":"conversion_1758006181738424395","file":"/tmp/av-pipeline-uploads/conversion_1758006181738424395/Converted_EML/2.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-16T12:46:37+05:30","type":"conversion_file","file":"/tmp/av-pipeline-uploads/conversion_1758006997870217323/Converted_EML/1.html","status":"converted"}
+{"ts":"2025-09-16T12:46:37+05:30","type":"conversion_file","file":"/tmp/av-pipeline-uploads/conversion_1758006997870217323/Converted_EML/2.html","status":"converted"}
+{"ts":"2025-09-16T07:16:37Z","type":"conversion_file","task_id":"conversion_1758006997870217323","file":"/tmp/av-pipeline-uploads/conversion_1758006997870217323/Converted_EML/1.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-16T07:16:37Z","type":"conversion_file","task_id":"conversion_1758006997870217323","file":"/tmp/av-pipeline-uploads/conversion_1758006997870217323/Converted_EML/2.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-16T12:57:14+05:30","type":"conversion_file","file":"/tmp/av-pipeline-uploads/conversion_1758007634102394395/Converted_EML/1.html","status":"converted"}
+{"ts":"2025-09-16T12:57:14+05:30","type":"conversion_file","file":"/tmp/av-pipeline-uploads/conversion_1758007634102394395/Converted_EML/2.html","status":"converted"}
+{"ts":"2025-09-16T07:27:14Z","type":"conversion_file","task_id":"conversion_1758007634102394395","file":"/tmp/av-pipeline-uploads/conversion_1758007634102394395/Converted_EML/1.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-16T07:27:14Z","type":"conversion_file","task_id":"conversion_1758007634102394395","file":"/tmp/av-pipeline-uploads/conversion_1758007634102394395/Converted_EML/2.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-16T08:12:08Z","type":"conversion_file","task_id":"conversion_1758010327380498437","file":"/tmp/av-pipeline-uploads/conversion_1758010327380498437/Converted_EML/sample-10.html","status":"converted","meta":{"conversion_type":"any-to-html"}}
+{"ts":"2025-09-16T08:12:08Z","type":"conversion_file","task_id":"conversion_1758010327380498437","file":"/tmp/av-pipeline-uploads/conversion_1758010327380498437/Converted_MBOX/sample_message_0.html","status":"converted","meta":{"conversion_type":"any-to-html"}}
+{"ts":"2025-09-16T08:12:08Z","type":"conversion_file","task_id":"conversion_1758010327380498437","file":"/tmp/av-pipeline-uploads/conversion_1758010327380498437/Converted_MBOX/sample_message_1.html","status":"converted","meta":{"conversion_type":"any-to-html"}}
+{"ts":"2025-09-16T08:12:08Z","type":"conversion_file","task_id":"conversion_1758010327380498437","file":"/tmp/av-pipeline-uploads/conversion_1758010327380498437/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted","meta":{"conversion_type":"any-to-html"}}
+{"ts":"2025-09-16T08:12:08Z","type":"conversion_file","task_id":"conversion_1758010327380498437","file":"/tmp/av-pipeline-uploads/conversion_1758010327380498437/Converted_PST/sample/email_1.html","status":"converted","meta":{"conversion_type":"any-to-html"}}
+{"ts":"2025-09-16T08:12:08Z","type":"conversion_file","task_id":"conversion_1758010327380498437","file":"/tmp/av-pipeline-uploads/conversion_1758010327380498437/Converted_EML/test_sample_message.html","status":"converted","meta":{"conversion_type":"any-to-html"}}
+{"ts":"2025-09-16T08:18:55Z","type":"conversion_stage","task_id":"TASK-202509-035","status":"done","meta":{"path":"/home/petals/Downloads/fwdasd.zip"}}
+{"ts":"2025-09-16T08:26:06Z","type":"conversion_stage","task_id":"TASK-202509-037","status":"done","meta":{"path":"/home/petals/Downloads/fwdasd.zip"}}
+{"ts":"2025-09-16T13:57:23+05:30","type":"conversion_file","file":"/home/petals/Downloads/fwdasd_extracted/Converted_EML/sample-10.html","status":"converted"}
+{"ts":"2025-09-16T13:57:23+05:30","type":"conversion_file","file":"/home/petals/Downloads/fwdasd_extracted/Converted_EML/test_sample_message.html","status":"converted"}
+{"ts":"2025-09-16T08:27:23Z","type":"conversion_file","task_id":"TASK-202509-038","file":"/home/petals/Downloads/fwdasd_extracted/Converted_EML/sample-10.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-16T08:27:23Z","type":"conversion_file","task_id":"TASK-202509-038","file":"/home/petals/Downloads/fwdasd_extracted/Converted_EML/test_sample_message.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-16T13:57:23+05:30","type":"conversion_file","file":"/home/petals/Downloads/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted"}
+{"ts":"2025-09-16T08:27:23Z","type":"conversion_file","task_id":"TASK-202509-038","file":"/home/petals/Downloads/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted","meta":{"conversion_type":"msg"}}
+{"ts":"2025-09-16T13:57:23+05:30","type":"conversion_file","file":"/home/petals/Downloads/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted"}
+{"ts":"2025-09-16T13:57:23+05:30","type":"conversion_file","file":"/home/petals/Downloads/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted"}
+{"ts":"2025-09-16T08:27:23Z","type":"conversion_file","task_id":"TASK-202509-038","file":"/home/petals/Downloads/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-16T08:27:23Z","type":"conversion_file","task_id":"TASK-202509-038","file":"/home/petals/Downloads/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-16T13:57:24+05:30","type":"conversion_file","file":"/home/petals/Downloads/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted"}
+{"ts":"2025-09-16T08:27:24Z","type":"conversion_file","task_id":"TASK-202509-038","file":"/home/petals/Downloads/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted","meta":{"conversion_type":"pst"}}
+{"ts":"2025-09-16T08:27:24Z","type":"conversion_stage","task_id":"TASK-202509-038","status":"done","meta":{"path":"/home/petals/Downloads/fwdasd_extracted"}}
+{"ts":"2025-09-16T08:27:53Z","type":"scan_engine","task_id":"TASK-202509-038","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-16T08:27:54Z","type":"scan_stage","task_id":"TASK-202509-038","status":"done"}
+{"ts":"2025-09-16T15:54:39+05:30","type":"conversion_file","file":"/home/petals/Downloads/fwdasd_extracted/Converted_EML/sample-10_1.html","status":"converted"}
+{"ts":"2025-09-16T15:54:39+05:30","type":"conversion_file","file":"/home/petals/Downloads/fwdasd_extracted/Converted_EML/test_sample_message_1.html","status":"converted"}
+{"ts":"2025-09-16T10:24:39Z","type":"conversion_file","task_id":"TASK-202509-040","file":"/home/petals/Downloads/fwdasd_extracted/Converted_EML/sample-10_1.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-16T10:24:39Z","type":"conversion_file","task_id":"TASK-202509-040","file":"/home/petals/Downloads/fwdasd_extracted/Converted_EML/test_sample_message_1.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-16T15:54:39+05:30","type":"conversion_file","file":"/home/petals/Downloads/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted"}
+{"ts":"2025-09-16T10:24:39Z","type":"conversion_file","task_id":"TASK-202509-040","file":"/home/petals/Downloads/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted","meta":{"conversion_type":"msg"}}
+{"ts":"2025-09-16T15:54:39+05:30","type":"conversion_file","file":"/home/petals/Downloads/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted"}
+{"ts":"2025-09-16T15:54:39+05:30","type":"conversion_file","file":"/home/petals/Downloads/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted"}
+{"ts":"2025-09-16T10:24:39Z","type":"conversion_file","task_id":"TASK-202509-040","file":"/home/petals/Downloads/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-16T10:24:39Z","type":"conversion_file","task_id":"TASK-202509-040","file":"/home/petals/Downloads/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-16T15:54:40+05:30","type":"conversion_file","file":"/home/petals/Downloads/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted"}
+{"ts":"2025-09-16T10:24:40Z","type":"conversion_file","task_id":"TASK-202509-040","file":"/home/petals/Downloads/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted","meta":{"conversion_type":"pst"}}
+{"ts":"2025-09-16T10:24:40Z","type":"conversion_stage","task_id":"TASK-202509-040","status":"done","meta":{"path":"/home/petals/Downloads/fwdasd_extracted"}}
+{"ts":"2025-09-16T10:24:52Z","type":"scan_engine","task_id":"TASK-202509-040","status":"done","av_name":"EMSI AV"}
+{"ts":"2025-09-16T10:25:04Z","type":"scan_engine","task_id":"TASK-202509-040","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-16T10:25:04Z","type":"scan_stage","task_id":"TASK-202509-040","status":"done"}
+{"ts":"2025-09-16T15:57:55+05:30","type":"conversion_file","file":"/srv/samba/share/fwdasd_extracted/Converted_EML/sample-10.html","status":"converted"}
+{"ts":"2025-09-16T15:57:55+05:30","type":"conversion_file","file":"/srv/samba/share/fwdasd_extracted/Converted_EML/test_sample_message.html","status":"converted"}
+{"ts":"2025-09-16T10:27:55Z","type":"conversion_file","task_id":"TASK-202509-041","file":"/srv/samba/share/fwdasd_extracted/Converted_EML/sample-10.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-16T10:27:55Z","type":"conversion_file","task_id":"TASK-202509-041","file":"/srv/samba/share/fwdasd_extracted/Converted_EML/test_sample_message.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-16T15:57:55+05:30","type":"conversion_file","file":"/srv/samba/share/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted"}
+{"ts":"2025-09-16T10:27:55Z","type":"conversion_file","task_id":"TASK-202509-041","file":"/srv/samba/share/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted","meta":{"conversion_type":"msg"}}
+{"ts":"2025-09-16T15:57:55+05:30","type":"conversion_file","file":"/srv/samba/share/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted"}
+{"ts":"2025-09-16T15:57:55+05:30","type":"conversion_file","file":"/srv/samba/share/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted"}
+{"ts":"2025-09-16T10:27:55Z","type":"conversion_file","task_id":"TASK-202509-041","file":"/srv/samba/share/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-16T10:27:55Z","type":"conversion_file","task_id":"TASK-202509-041","file":"/srv/samba/share/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-16T15:57:56+05:30","type":"conversion_file","file":"/srv/samba/share/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted"}
+{"ts":"2025-09-16T10:27:56Z","type":"conversion_file","task_id":"TASK-202509-041","file":"/srv/samba/share/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted","meta":{"conversion_type":"pst"}}
+{"ts":"2025-09-16T10:27:56Z","type":"conversion_stage","task_id":"TASK-202509-041","status":"done","meta":{"path":"/srv/samba/share/fwdasd_extracted"}}
+{"ts":"2025-09-16T10:28:08Z","type":"scan_engine","task_id":"TASK-202509-041","status":"done","av_name":"EMSI AV"}
+{"ts":"2025-09-16T10:28:20Z","type":"scan_engine","task_id":"TASK-202509-041","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-16T10:28:20Z","type":"scan_stage","task_id":"TASK-202509-041","status":"done"}
+{"ts":"2025-09-17T10:49:55+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_EML/sample-10.html","status":"converted"}
+{"ts":"2025-09-17T10:49:55+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_EML/test_sample_message.html","status":"converted"}
+{"ts":"2025-09-17T05:19:55Z","type":"conversion_file","task_id":"TASK-202509-043","file":"/mnt/fwdasd_extracted/Converted_EML/sample-10.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-17T05:19:55Z","type":"conversion_file","task_id":"TASK-202509-043","file":"/mnt/fwdasd_extracted/Converted_EML/test_sample_message.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-17T10:49:56+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted"}
+{"ts":"2025-09-17T05:19:56Z","type":"conversion_file","task_id":"TASK-202509-043","file":"/mnt/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted","meta":{"conversion_type":"msg"}}
+{"ts":"2025-09-17T10:49:56+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted"}
+{"ts":"2025-09-17T10:49:56+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted"}
+{"ts":"2025-09-17T05:19:56Z","type":"conversion_file","task_id":"TASK-202509-043","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-17T05:19:56Z","type":"conversion_file","task_id":"TASK-202509-043","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-17T10:49:56+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted"}
+{"ts":"2025-09-17T05:19:56Z","type":"conversion_file","task_id":"TASK-202509-043","file":"/mnt/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted","meta":{"conversion_type":"pst"}}
+{"ts":"2025-09-17T05:19:56Z","type":"conversion_stage","task_id":"TASK-202509-043","status":"done","meta":{"path":"/mnt/fwdasd_extracted"}}
+{"ts":"2025-09-17T05:20:33Z","type":"scan_engine","task_id":"TASK-202509-043","status":"done","av_name":"EMSI AV"}
+{"ts":"2025-09-17T05:20:58Z","type":"scan_engine","task_id":"TASK-202509-043","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-17T05:20:58Z","type":"scan_stage","task_id":"TASK-202509-043","status":"done"}
+{"ts":"2025-09-17T10:52:51+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_EML/sample-10.html","status":"converted"}
+{"ts":"2025-09-17T10:52:51+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_EML/test_sample_message.html","status":"converted"}
+{"ts":"2025-09-17T05:22:51Z","type":"conversion_file","task_id":"TASK-202509-044","file":"/mnt/fwdasd_extracted/Converted_EML/sample-10.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-17T05:22:51Z","type":"conversion_file","task_id":"TASK-202509-044","file":"/mnt/fwdasd_extracted/Converted_EML/test_sample_message.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-17T10:52:51+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted"}
+{"ts":"2025-09-17T05:22:51Z","type":"conversion_file","task_id":"TASK-202509-044","file":"/mnt/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted","meta":{"conversion_type":"msg"}}
+{"ts":"2025-09-17T10:52:51+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted"}
+{"ts":"2025-09-17T10:52:51+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted"}
+{"ts":"2025-09-17T05:22:51Z","type":"conversion_file","task_id":"TASK-202509-044","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-17T05:22:51Z","type":"conversion_file","task_id":"TASK-202509-044","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-17T10:52:51+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted"}
+{"ts":"2025-09-17T05:22:51Z","type":"conversion_file","task_id":"TASK-202509-044","file":"/mnt/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted","meta":{"conversion_type":"pst"}}
+{"ts":"2025-09-17T05:22:51Z","type":"conversion_stage","task_id":"TASK-202509-044","status":"done","meta":{"path":"/mnt/fwdasd_extracted"}}
+{"ts":"2025-09-17T05:23:03Z","type":"scan_engine","task_id":"TASK-202509-044","status":"done","av_name":"EMSI AV"}
+{"ts":"2025-09-17T05:23:16Z","type":"scan_engine","task_id":"TASK-202509-044","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-17T05:23:16Z","type":"scan_stage","task_id":"TASK-202509-044","status":"done"}

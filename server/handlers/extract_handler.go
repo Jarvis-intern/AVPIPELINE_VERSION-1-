@@ -1,5 +1,4 @@
 package handlers
-
 import (
 	"bufio"
 	"fmt"
@@ -12,18 +11,8 @@ import (
 	"time"
 
 	"gitlab.com/magnetite1/av-pipeline/server/sockets"
+	"gitlab.com/magnetite1/av-pipeline/server/logger"
 )
-
-// ExtractionTask represents an extraction task
-type ExtractionTask struct {
-	FolderPath     string            `json:"folder_path"`
-	CurrentArchive string            `json:"current_archive,omitempty"`
-	Password       string            `json:"password,omitempty"`
-	Passwords      map[string]string `json:"passwords,omitempty"`
-	TaskID         string            `json:"task_id,omitempty"`
-	OutputPath     string            `json:"output_path,omitempty"`
-}
-
 // ExtractionResult represents the result of an extraction operation
 type ExtractionResult struct {
 	Success          bool     `json:"success"`
@@ -56,6 +45,14 @@ type ExtractionSession struct {
 	TotalSize      int64
 	StartTime      time.Time
 	UserID         string
+}
+
+// ExtractionTask represents parameters for an extraction run
+type ExtractionTask struct {
+	FolderPath string
+	Password   string            // single password (legacy/simple mode)
+	Passwords  map[string]string // per-archive passwords
+	TaskID     string
 }
 
 // NewExtractionService creates a new extraction service
@@ -367,6 +364,10 @@ func (es *ExtractionService) processExtractionRecursively(task ExtractionTask, s
 			"total_discovered": totalDiscovered,
 			"status":           "RUNNING",
 		})
+		// Log file-level extraction result
+		if archiveName != "" {
+			logger.LogExtractionFile(session.TaskID, archiveName, success)
+		}
 	}
 
 	// If any archives still require passwords, don't mark the stage as complete.
@@ -649,6 +650,9 @@ func (es *ExtractionService) emitProgress(session *ExtractionSession, archive st
 		"total_size":      session.TotalSize,
 		"progress":        progress,
 	})
+	if archive != "" {
+		logger.LogExtractionFile(session.TaskID, archive, success)
+	}
 }
 
 // emitPasswordRequired sends a password required event via WebSocket

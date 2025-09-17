@@ -45,11 +45,15 @@ func main() {
 	// routes.RegisterWebsocketRoutes(r)
 	r.GET("/ws", handlers.WebSocketHandler)
 
+	if err := logger.InitOperationLogger(); err != nil {
+		log.Printf("failed to init operation logger: %v", err)
+	}
 	if err := logger.InitActivityLogger(); err != nil {
-		log.Printf("Failed to init activity logger: %v", err)
+		log.Printf("failed to init activity logger: %v", err)
 	}
 
 	// After router creation:
+	handlers.RegisterOperationLogRoutes(r)
 	handlers.RegisterActivityRoutes(r)
 
 	log.Println("Server starting on :8000")

@@ -14,6 +14,7 @@ import (
 	"gitlab.com/magnetite1/av-pipeline/server/models"
 	"gitlab.com/magnetite1/av-pipeline/server/sockets"
 	"gorm.io/gorm"
+	"gitlab.com/magnetite1/av-pipeline/server/logger"
 )
 
 // Global map to track stage completion channels
@@ -54,22 +55,29 @@ func Start_automation(client *sockets.Client, data map[string]any) {
 	rawFilePath, _ := data["filePath"].(string)
 	rawAvFilePath, _ := data["avFilePath"].(string)
 
-	// Normalize and validate input paths to avoid common issues like "/Downloads/..."
+	// Normalize and validate the main filePath (must exist on this VM)
 	filePath, errNorm := normalizeInputPath(rawFilePath)
 	if errNorm != nil {
 		sockets.EmitError(client, fmt.Sprintf("invalid filePath: %v", errNorm), "automation_error")
 		return
 	}
-	avFilePath := filePath
+
+	// Preserve AV file path separately. We TRY to normalize (in case it's also local),
+	// but if that fails we keep the raw user-provided path instead of falling back
+	// to filePath (old behavior caused merging/confusion).
+	avFilePath := filePath // default if user leaves it blank
 	if strings.TrimSpace(rawAvFilePath) != "" {
 		if p2, err2 := normalizeInputPath(rawAvFilePath); err2 == nil {
 			avFilePath = p2
 		} else {
-			// If AV path invalid, fall back to main filePath but inform client
-			sockets.EmitToUser(client.UserID, "automation_warning", map[string]any{
-				"task_id":  taskID,
-				"warning":  fmt.Sprintf("invalid avFilePath provided (%s), defaulting to filePath", rawAvFilePath),
-				"filePath": filePath,
+			// Accept raw path (likely remote share path) without forcing existence here.
+			avFilePath = rawAvFilePath
+			sockets.EmitToUser(client.UserID, "automation_info", map[string]any{
+				"task_id":     taskID,
+				"message":     "AV File Path kept as raw (not found locally): " + rawAvFilePath,
+				"avFilePath":  avFilePath,
+				"filePath":    filePath,
+				"note":        "This is expected if AV path is on remote AV VMs.",
 			})
 		}
 	}
@@ -254,6 +262,8 @@ func StartWorkflowOrchestration(client *sockets.Client, taskID string, userID st
 				"next_stage": stageType,
 				"progress":   progressArr,
 			})
+
+			logger.LogAutomationStage(taskID, stageType, "started", 0)
 
 			switch stageType {
 			// AFTER (The correct version for automation)
@@ -455,6 +465,8 @@ func StartWorkflowOrchestration(client *sockets.Client, taskID string, userID st
 				go HandleScanning(client, data)
 				waitForStageCompletion(taskID, "AV_SCAN")
 			}
+
+			logger.LogAutomationStage(taskID, stageType, "completed", 0)
 		}
 
 		// Workflow complete
