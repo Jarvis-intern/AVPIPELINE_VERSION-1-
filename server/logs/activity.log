@@ -105,3 +105,34 @@
 {"ts":"2025-09-17T05:23:03Z","type":"scan_engine","task_id":"TASK-202509-044","status":"done","av_name":"EMSI AV"}
 {"ts":"2025-09-17T05:23:16Z","type":"scan_engine","task_id":"TASK-202509-044","status":"done","av_name":"CLAM AV"}
 {"ts":"2025-09-17T05:23:16Z","type":"scan_stage","task_id":"TASK-202509-044","status":"done"}
+{"ts":"2025-09-17T10:57:19+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_EML/sample-10_1.html","status":"converted"}
+{"ts":"2025-09-17T10:57:19+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_EML/test_sample_message_1.html","status":"converted"}
+{"ts":"2025-09-17T05:27:19Z","type":"conversion_file","task_id":"TASK-202509-045","file":"/mnt/fwdasd_extracted/Converted_EML/sample-10_1.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-17T05:27:19Z","type":"conversion_file","task_id":"TASK-202509-045","file":"/mnt/fwdasd_extracted/Converted_EML/test_sample_message_1.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-17T10:57:19+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted"}
+{"ts":"2025-09-17T05:27:19Z","type":"conversion_file","task_id":"TASK-202509-045","file":"/mnt/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted","meta":{"conversion_type":"msg"}}
+{"ts":"2025-09-17T10:57:19+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted"}
+{"ts":"2025-09-17T10:57:19+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted"}
+{"ts":"2025-09-17T05:27:19Z","type":"conversion_file","task_id":"TASK-202509-045","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-17T05:27:19Z","type":"conversion_file","task_id":"TASK-202509-045","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-17T10:57:19+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted"}
+{"ts":"2025-09-17T05:27:19Z","type":"conversion_file","task_id":"TASK-202509-045","file":"/mnt/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted","meta":{"conversion_type":"pst"}}
+{"ts":"2025-09-17T05:27:19Z","type":"conversion_stage","task_id":"TASK-202509-045","status":"done","meta":{"path":"/mnt/fwdasd_extracted"}}
+{"ts":"2025-09-17T05:27:31Z","type":"scan_engine","task_id":"TASK-202509-045","status":"done","av_name":"EMSI AV"}
+{"ts":"2025-09-17T05:27:44Z","type":"scan_engine","task_id":"TASK-202509-045","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-17T05:27:44Z","type":"scan_stage","task_id":"TASK-202509-045","status":"done"}
+{"ts":"2025-09-17T11:06:50+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_EML/sample-10.html","status":"converted"}
+{"ts":"2025-09-17T11:06:50+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_EML/test_sample_message.html","status":"converted"}
+{"ts":"2025-09-17T05:36:50Z","type":"conversion_file","task_id":"TASK-202509-046","file":"/mnt/fwdasd_extracted/Converted_EML/sample-10.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-17T05:36:50Z","type":"conversion_file","task_id":"TASK-202509-046","file":"/mnt/fwdasd_extracted/Converted_EML/test_sample_message.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-17T11:06:50+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted"}
+{"ts":"2025-09-17T05:36:50Z","type":"conversion_file","task_id":"TASK-202509-046","file":"/mnt/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted","meta":{"conversion_type":"msg"}}
+{"ts":"2025-09-17T11:06:50+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted"}
+{"ts":"2025-09-17T11:06:50+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted"}
+{"ts":"2025-09-17T05:36:50Z","type":"conversion_file","task_id":"TASK-202509-046","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-17T05:36:50Z","type":"conversion_file","task_id":"TASK-202509-046","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-17T11:06:51+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted"}
+{"ts":"2025-09-17T05:36:51Z","type":"conversion_file","task_id":"TASK-202509-046","file":"/mnt/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted","meta":{"conversion_type":"pst"}}
+{"ts":"2025-09-17T05:36:51Z","type":"conversion_stage","task_id":"TASK-202509-046","status":"done","meta":{"path":"/mnt/fwdasd_extracted"}}
+{"ts":"2025-09-17T05:37:15Z","type":"scan_engine","task_id":"TASK-202509-046","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-17T05:37:15Z","type":"scan_stage","task_id":"TASK-202509-046","status":"done"}

@@ -293,6 +293,14 @@ func handleOrganizeAVResults(client *sockets.Client, data map[string]any) {
 		return
 	}
 
+	originalInputPath := filePath
+	if info, err := os.Stat(filePath); err == nil && !info.IsDir() {
+		// If a file was supplied, use its parent directory for organization
+		parent := filepath.Dir(filePath)
+		log.Printf("[handleOrganizeAVResults] Provided filePath is a file (%s). Using parent directory: %s", filePath, parent)
+		filePath = parent
+	}
+
 	infectedFilesInterface, ok := data["infectedFiles"].([]interface{})
 	if !ok {
 		log.Printf("Error: Invalid infectedFiles in organize_av_results request")
@@ -303,15 +311,19 @@ func handleOrganizeAVResults(client *sockets.Client, data map[string]any) {
 	// Convert infected files to string slice and map Windows paths to Linux paths
 	var infectedFiles []string
 	for _, file := range infectedFilesInterface {
-		// Support both string and object with filePath property
 		if fileStr, ok := file.(string); ok {
 			linuxPath := windowsToLinuxRelative(fileStr, filePath)
 			rel, _ := filepath.Rel(filePath, linuxPath)
 			infectedFiles = append(infectedFiles, rel)
+		} else if obj, ok := file.(map[string]any); ok {
+			if p, ok := obj["filePath"].(string); ok {
+				linuxPath := windowsToLinuxRelative(p, filePath)
+				rel, _ := filepath.Rel(filePath, linuxPath)
+				infectedFiles = append(infectedFiles, rel)
+			}
 		}
 	}
 
-	// Get user ID from client
 	userID := client.UserID
 	if userID == "" {
 		log.Printf("Error: No user ID available for file organization")
@@ -321,20 +333,28 @@ func handleOrganizeAVResults(client *sockets.Client, data map[string]any) {
 
 	taskID, _ := data["task_id"].(string)
 
-	// Start file organization in a goroutine
 	go func() {
-		fmt.Println(infectedFiles)
+		log.Printf("[handleOrganizeAVResults] originalInput=%s resolvedBase=%s infectedCount=%d",
+			originalInputPath, filePath, len(infectedFiles))
 		organizeFiles(filePath, infectedFiles, userID, taskID)
 	}()
 }
 
 // organizeFiles creates infected and cleaned folders and organizes files accordingly
 func organizeFiles(filePath string, infectedFiles []string, userID string, taskID string) {
+	// Defensive: ensure base is a directory
+	if fi, err := os.Stat(filePath); err == nil && !fi.IsDir() {
+		dir := filepath.Dir(filePath)
+		log.Printf("[organizeFiles] Base path is file (%s). Switching to parent directory: %s", filePath, dir)
+		filePath = dir
+	}
+
 	infectedFolder := filepath.Join(filePath, "infected")
 	if err := os.MkdirAll(infectedFolder, 0755); err != nil {
 		log.Printf("Error: Failed to create infected folder: %v", err)
 		sockets.EmitToUser(userID, "organize_av_results_error", map[string]any{
 			"error": fmt.Sprintf("Failed to create infected folder: %v", err),
+			"base":  filePath,
 		})
 		return
 	}
