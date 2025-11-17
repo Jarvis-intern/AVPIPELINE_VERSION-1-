@@ -18,6 +18,7 @@ func Migrate() error {
 		&models.MasterData{},
 		&models.TaskProgress{},
 		&models.Conversion{},
+		&models.AVScanLog{},
 	)
 }
 

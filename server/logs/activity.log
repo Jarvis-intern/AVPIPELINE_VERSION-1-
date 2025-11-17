@@ -301,3 +301,12 @@
 {"ts":"2025-11-07T11:16:19Z","type":"conversion_stage","task_id":"TASK-202511-018","status":"done","meta":{"path":"/mnt/av-test-data"}}
 {"ts":"2025-11-07T11:16:44Z","type":"scan_engine","task_id":"TASK-202511-018","status":"done","av_name":"CLAM AV"}
 {"ts":"2025-11-07T11:16:44Z","type":"scan_stage","task_id":"TASK-202511-018","status":"done"}
+{"ts":"2025-11-17T09:48:07Z","type":"conversion_stage","task_id":"TASK-202511-001","status":"done","meta":{"path":"/home/ashveil/Downloads/av-test_extracted"}}
+{"ts":"2025-11-17T09:49:18Z","type":"scan_engine","task_id":"TASK-202511-001","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-17T09:49:18Z","type":"scan_stage","task_id":"TASK-202511-001","status":"done"}
+{"ts":"2025-11-17T09:51:40Z","type":"conversion_stage","task_id":"TASK-202511-002","status":"done","meta":{"path":"/home/ashveil/Downloads/av-test_extracted"}}
+{"ts":"2025-11-17T09:52:07Z","type":"scan_engine","task_id":"TASK-202511-002","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-17T09:52:07Z","type":"scan_stage","task_id":"TASK-202511-002","status":"done"}
+{"ts":"2025-11-17T09:59:27Z","type":"conversion_stage","task_id":"TASK-202511-003","status":"done","meta":{"path":"/home/ashveil/Downloads/av-test_extracted"}}
+{"ts":"2025-11-17T09:59:55Z","type":"scan_engine","task_id":"TASK-202511-003","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-17T09:59:55Z","type":"scan_stage","task_id":"TASK-202511-003","status":"done"}
