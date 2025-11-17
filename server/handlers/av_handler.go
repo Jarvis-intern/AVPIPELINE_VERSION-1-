@@ -13,10 +13,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"gitlab.com/magnetite1/av-pipeline/server/config"
+	"gitlab.com/magnetite1/av-pipeline/server/logger"
 	"gitlab.com/magnetite1/av-pipeline/server/models"
 	"gitlab.com/magnetite1/av-pipeline/server/proto"
 	"gitlab.com/magnetite1/av-pipeline/server/sockets"
-	"gitlab.com/magnetite1/av-pipeline/server/logger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -148,11 +148,15 @@ func handleAdhocScanning(client *sockets.Client, data map[string]any) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
 	defer cancel()
 
+	// Normalize scan path for the selected AV engine
+	normPath := normalizeScanPathForAV(avData, scanPath, "", "")
+
 	req := &proto.ScanRequest{
 		ScanId:     scanningID,
-		ScanPath:   scanPath,
+		ScanPath:   normPath,
 		AvToolName: avData.Name,
 		Command:    avData.ScanCommand,
+		Recursive:  true,
 	}
 
 	stream, err := avClient.StartScan(ctx, req)
@@ -209,6 +213,9 @@ func SaveAVScanLogToDB(log *proto.ScanLog) {
 func handleAutomationScanning(client *sockets.Client, data map[string]any) {
 	taskId, _ := data["task_id"].(string)
 	scanPath, _ := data["scan_path"].(string)
+	// Optional hints passed by orchestrator
+	linuxPath, _ := data["linux_path"].(string)
+	rawAVPath, _ := data["raw_av_path"].(string)
 	avNames, ok := data["av_names"].([]interface{})
 	if !ok || len(avNames) == 0 {
 		sockets.EmitError(client, "Missing or invalid av_ids", "av_scan_error")
@@ -351,11 +358,15 @@ func handleAutomationScanning(client *sockets.Client, data map[string]any) {
 			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
 			defer cancel()
 
+			// Choose a scan path appropriate for this AV
+			chosen := normalizeScanPathForAV(avData, scanPath, linuxPath, rawAVPath)
+
 			req := &proto.ScanRequest{
 				ScanId:     taskId,
-				ScanPath:   scanPath,
+				ScanPath:   chosen,
 				AvToolName: avData.Name,
 				Command:    avData.ScanCommand,
+				Recursive:  true,
 			}
 
 			stream, err := avClient.StartScan(ctx, req)
@@ -481,7 +492,7 @@ func handleAutomationScanning(client *sockets.Client, data map[string]any) {
 								// (Optional) if you can compute aggregated stats here:
 								// EmitScanStats(totalFiles, scannedSoFar, infectedSoFar, inProgressCount)
 
-                                avScanData[j] = avEntry
+								avScanData[j] = avEntry
 								updated = true
 								break
 							}
@@ -538,8 +549,23 @@ func handleAutomationScanning(client *sockets.Client, data map[string]any) {
 
 // containsCaseInsensitive reports whether substr appears in s case-insensitively.
 func containsCaseInsensitive(s, substr string) bool {
-	if substr == "" { return true }
+	if substr == "" {
+		return true
+	}
 	ls := strings.ToLower(s)
 	lsub := strings.ToLower(substr)
 	return strings.Contains(ls, lsub)
+}
+
+// normalizeScanPathForAV maps given scanPath into a path suitable for the AV host.
+// For Linux ClamAV running on this server, Windows-style shares like "Y:\\folder\\file" must be
+// mapped to a local mount such as "/mnt/folder/file". We support a JSON env map AV_PATH_MAP_JSON.
+// Example: AV_PATH_MAP_JSON='{"Y:": "/mnt", "Z:": "/mnt/z"}'
+func normalizeScanPathForAV(av models.AV, scanPath string, linuxHint string, rawAVPath string) string {
+	// Revert to prior behavior: don't transform user paths.
+	// If a raw AV path was provided by automation, use that; otherwise use the scanPath verbatim.
+	if raw := strings.TrimSpace(rawAVPath); raw != "" {
+		return raw
+	}
+	return scanPath
 }

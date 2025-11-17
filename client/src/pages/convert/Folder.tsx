@@ -63,6 +63,7 @@ const ConvertFolderPage: React.FC = () => {
   // *** NEW STATE AND REFS FOR FILE HANDLING ***
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const [displayPath, setDisplayPath] = useState<string>("");
+  const [outputDir, setOutputDir] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
   
@@ -109,10 +110,15 @@ const ConvertFolderPage: React.FC = () => {
     const formData = new FormData();
     formData.append("conversion_type", selectedFormat);
     formData.append("user_id", socketUserId);
+    if (outputDir.trim()) {
+      formData.append("output_dir", outputDir.trim());
+    }
 
     for (let i = 0; i < selectedFiles.length; i++) {
-      // The browser automatically provides the relative path for folder uploads
-      formData.append("files", selectedFiles[i], selectedFiles[i].name);
+      const file = selectedFiles[i];
+      // Preserve folder structure by using webkitRelativePath when available
+      const rel = (file as any).webkitRelativePath as string | undefined;
+      formData.append("files", file, rel && rel.length > 0 ? rel : file.name);
     }
 
     try {
@@ -202,6 +208,18 @@ const ConvertFolderPage: React.FC = () => {
                 <FolderOpen className="h-4 w-4" />
               </Button>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="outputDir">Server Output Directory (optional)</Label>
+            <Input
+              id="outputDir"
+              placeholder="e.g. /data/converted or leave blank to use temporary"
+              value={outputDir}
+              onChange={(e) => setOutputDir(e.target.value)}
+              className="bg-slate-50 dark:bg-slate-800"
+            />
+            <p className="text-xs text-muted-foreground">Tip: Specify an absolute path on the server to save results outside /tmp.</p>
           </div>
 
           <Button

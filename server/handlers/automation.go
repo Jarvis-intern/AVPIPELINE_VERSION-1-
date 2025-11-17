@@ -459,6 +459,8 @@ func StartWorkflowOrchestration(client *sockets.Client, taskID string, userID st
 				data := map[string]any{
 					"task_id":   taskID,
 					"scan_path": avFilePath,
+					"linux_path": workPath,     // if we reached here, workPath is the local path on this server
+					"raw_av_path": avFilePath,  // keep original avFilePath the user provided
 					"av_names":  avNames,
 				}
 

@@ -136,3 +136,168 @@
 {"ts":"2025-09-17T05:36:51Z","type":"conversion_stage","task_id":"TASK-202509-046","status":"done","meta":{"path":"/mnt/fwdasd_extracted"}}
 {"ts":"2025-09-17T05:37:15Z","type":"scan_engine","task_id":"TASK-202509-046","status":"done","av_name":"CLAM AV"}
 {"ts":"2025-09-17T05:37:15Z","type":"scan_stage","task_id":"TASK-202509-046","status":"done"}
+{"ts":"2025-09-20T10:19:14+05:30","type":"conversion_file","file":"/tmp/av-pipeline-uploads/conversion_1758343754389201778/Converted_EML/1.html","status":"converted"}
+{"ts":"2025-09-20T04:49:14Z","type":"conversion_file","task_id":"conversion_1758343754389201778","file":"/tmp/av-pipeline-uploads/conversion_1758343754389201778/Converted_EML/1.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-20T06:15:00Z","type":"conversion_stage","task_id":"TASK-202509-048","status":"done","meta":{"path":"/mnt/0cb12f03cf5aefd3d2dcfa90b1a9422f120424f2b1478b1d86ac04b90854f2f3_extracted"}}
+{"ts":"2025-09-20T06:15:38Z","type":"scan_engine","task_id":"TASK-202509-048","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-20T06:15:38Z","type":"scan_stage","task_id":"TASK-202509-048","status":"done"}
+{"ts":"2025-09-20T06:30:43Z","type":"conversion_stage","task_id":"TASK-202509-049","status":"done","meta":{"path":"/mnt/0cb12f03cf5aefd3d2dcfa90b1a9422f120424f2b1478b1d86ac04b90854f2f3_extracted"}}
+{"ts":"2025-09-20T06:31:03Z","type":"scan_engine","task_id":"TASK-202509-049","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-20T06:31:03Z","type":"scan_stage","task_id":"TASK-202509-049","status":"done"}
+{"ts":"2025-09-20T06:32:35Z","type":"conversion_stage","task_id":"TASK-202509-050","status":"done","meta":{"path":"/mnt/chutkeserahah_extracted"}}
+{"ts":"2025-09-20T06:32:58Z","type":"scan_engine","task_id":"TASK-202509-050","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-20T06:32:58Z","type":"scan_stage","task_id":"TASK-202509-050","status":"done"}
+{"ts":"2025-09-20T12:28:32+05:30","type":"conversion_file","file":"/tmp/av-pipeline-uploads/conversion_1758351512571863579/Converted_EML/1.html","status":"converted"}
+{"ts":"2025-09-20T06:58:32Z","type":"conversion_file","task_id":"conversion_1758351512571863579","file":"/tmp/av-pipeline-uploads/conversion_1758351512571863579/Converted_EML/1.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-20T07:26:53Z","type":"conversion_stage","task_id":"TASK-202509-051","status":"done","meta":{"path":"/mnt/hello_extracted"}}
+{"ts":"2025-09-20T07:27:17Z","type":"scan_engine","task_id":"TASK-202509-051","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-20T07:27:17Z","type":"scan_stage","task_id":"TASK-202509-051","status":"done"}
+{"ts":"2025-09-20T07:30:25Z","type":"conversion_stage","task_id":"TASK-202509-052","status":"done","meta":{"path":"/mnt/hello_extracted"}}
+{"ts":"2025-09-20T07:30:48Z","type":"scan_engine","task_id":"TASK-202509-052","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-20T07:30:48Z","type":"scan_stage","task_id":"TASK-202509-052","status":"done"}
+{"ts":"2025-09-20T07:38:32Z","type":"conversion_stage","task_id":"TASK-202509-053","status":"done","meta":{"path":"/mnt/hello_extracted"}}
+{"ts":"2025-09-20T07:38:55Z","type":"scan_engine","task_id":"TASK-202509-053","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-20T07:38:55Z","type":"scan_stage","task_id":"TASK-202509-053","status":"done"}
+{"ts":"2025-09-20T07:41:21Z","type":"conversion_stage","task_id":"TASK-202509-054","status":"done","meta":{"path":"/mnt/hello_extracted"}}
+{"ts":"2025-09-20T07:41:47Z","type":"scan_engine","task_id":"TASK-202509-054","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-20T07:41:47Z","type":"scan_stage","task_id":"TASK-202509-054","status":"done"}
+{"ts":"2025-09-20T08:01:50Z","type":"conversion_stage","task_id":"TASK-202509-055","status":"done","meta":{"path":"/mnt/hello_extracted"}}
+{"ts":"2025-09-20T08:02:34Z","type":"scan_engine","task_id":"TASK-202509-055","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-20T08:02:34Z","type":"scan_stage","task_id":"TASK-202509-055","status":"done"}
+{"ts":"2025-09-20T08:23:50Z","type":"conversion_stage","task_id":"TASK-202509-056","status":"done","meta":{"path":"/mnt/hello_extracted"}}
+{"ts":"2025-09-20T08:24:16Z","type":"conversion_stage","task_id":"TASK-202509-057","status":"done","meta":{"path":"/mnt/hello_extracted"}}
+{"ts":"2025-09-20T08:24:42Z","type":"scan_engine","task_id":"TASK-202509-057","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-20T08:24:42Z","type":"scan_stage","task_id":"TASK-202509-057","status":"done"}
+{"ts":"2025-09-20T08:26:49Z","type":"conversion_stage","task_id":"TASK-202509-058","status":"done","meta":{"path":"/mnt/hello_extracted"}}
+{"ts":"2025-09-20T08:27:13Z","type":"scan_engine","task_id":"TASK-202509-058","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-20T08:27:13Z","type":"scan_stage","task_id":"TASK-202509-058","status":"done"}
+{"ts":"2025-09-20T08:38:10Z","type":"conversion_stage","task_id":"TASK-202509-059","status":"done","meta":{"path":"/mnt/hello_extracted"}}
+{"ts":"2025-09-20T08:38:34Z","type":"scan_engine","task_id":"TASK-202509-059","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-20T08:38:34Z","type":"scan_stage","task_id":"TASK-202509-059","status":"done"}
+{"ts":"2025-09-20T14:17:13+05:30","type":"conversion_file","file":"/tmp/av-pipeline-uploads/conversion_1758358033015518212/Converted_EML/1.html","status":"converted"}
+{"ts":"2025-09-20T08:47:13Z","type":"conversion_file","task_id":"conversion_1758358033015518212","file":"/tmp/av-pipeline-uploads/conversion_1758358033015518212/Converted_EML/1.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-20T09:02:40Z","type":"conversion_stage","task_id":"TASK-202509-060","status":"done","meta":{"path":"/mnt/hello_extracted"}}
+{"ts":"2025-09-20T09:03:17Z","type":"scan_engine","task_id":"TASK-202509-060","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-20T09:03:17Z","type":"scan_stage","task_id":"TASK-202509-060","status":"done"}
+{"ts":"2025-09-20T14:34:59+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_EML/sample-10.html","status":"converted"}
+{"ts":"2025-09-20T14:34:59+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_EML/test_sample_message.html","status":"converted"}
+{"ts":"2025-09-20T09:04:59Z","type":"conversion_file","task_id":"TASK-202509-061","file":"/mnt/fwdasd_extracted/Converted_EML/sample-10.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-20T09:04:59Z","type":"conversion_file","task_id":"TASK-202509-061","file":"/mnt/fwdasd_extracted/Converted_EML/test_sample_message.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-20T14:35:00+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted"}
+{"ts":"2025-09-20T09:05:00Z","type":"conversion_file","task_id":"TASK-202509-061","file":"/mnt/fwdasd_extracted/Converted_MSG/(outlookEMLandMSGconverter Trial Version Import) BitDaddys Software.html","status":"converted","meta":{"conversion_type":"msg"}}
+{"ts":"2025-09-20T14:35:00+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted"}
+{"ts":"2025-09-20T14:35:00+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted"}
+{"ts":"2025-09-20T09:05:00Z","type":"conversion_file","task_id":"TASK-202509-061","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-20T09:05:00Z","type":"conversion_file","task_id":"TASK-202509-061","file":"/mnt/fwdasd_extracted/Converted_MBOX/sample_message_1.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-20T14:35:00+05:30","type":"conversion_file","file":"/mnt/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted"}
+{"ts":"2025-09-20T09:05:00Z","type":"conversion_file","task_id":"TASK-202509-061","file":"/mnt/fwdasd_extracted/Converted_PST/sample/email_1.html","status":"converted","meta":{"conversion_type":"pst"}}
+{"ts":"2025-09-20T09:05:00Z","type":"conversion_stage","task_id":"TASK-202509-061","status":"done","meta":{"path":"/mnt/fwdasd_extracted"}}
+{"ts":"2025-09-20T09:05:25Z","type":"scan_engine","task_id":"TASK-202509-061","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-20T09:05:25Z","type":"scan_stage","task_id":"TASK-202509-061","status":"done"}
+{"ts":"2025-09-20T14:35:59+05:30","type":"conversion_file","file":"/tmp/av-pipeline-uploads/conversion_1758359159840607247/Converted_EML/1.html","status":"converted"}
+{"ts":"2025-09-20T09:05:59Z","type":"conversion_file","task_id":"conversion_1758359159840607247","file":"/tmp/av-pipeline-uploads/conversion_1758359159840607247/Converted_EML/1.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-20T14:45:17+05:30","type":"conversion_file","file":"/home/petals/Downloads/newtest/Converted_EML/1.html","status":"converted"}
+{"ts":"2025-09-20T14:45:17+05:30","type":"conversion_file","file":"/home/petals/Downloads/newtest/Converted_EML/2.html","status":"converted"}
+{"ts":"2025-09-20T09:15:17Z","type":"conversion_file","task_id":"conversion_1758359717730708257","file":"/home/petals/Downloads/newtest/Converted_EML/1.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-20T09:15:17Z","type":"conversion_file","task_id":"conversion_1758359717730708257","file":"/home/petals/Downloads/newtest/Converted_EML/2.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-20T15:36:17+05:30","type":"conversion_file","file":"/mnt/testsample_extracted/Converted_MBOX/testmbox_message_0.html","status":"converted"}
+{"ts":"2025-09-20T10:06:17Z","type":"conversion_file","task_id":"TASK-202509-062","file":"/mnt/testsample_extracted/Converted_MBOX/testmbox_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-20T10:06:17Z","type":"conversion_stage","task_id":"TASK-202509-062","status":"done","meta":{"path":"/mnt/testsample_extracted"}}
+{"ts":"2025-09-20T10:06:46Z","type":"scan_engine","task_id":"TASK-202509-062","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-20T10:06:46Z","type":"scan_stage","task_id":"TASK-202509-062","status":"done"}
+{"ts":"2025-09-20T15:51:36+05:30","type":"conversion_file","file":"/mnt/testsample_extracted/Converted_MBOX/testmbox_message_0.html","status":"converted"}
+{"ts":"2025-09-20T10:21:36Z","type":"conversion_file","task_id":"TASK-202509-063","file":"/mnt/testsample_extracted/Converted_MBOX/testmbox_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-20T10:21:36Z","type":"conversion_stage","task_id":"TASK-202509-063","status":"done","meta":{"path":"/mnt/testsample_extracted"}}
+{"ts":"2025-09-20T10:22:08Z","type":"scan_engine","task_id":"TASK-202509-063","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-20T10:22:08Z","type":"scan_stage","task_id":"TASK-202509-063","status":"done"}
+{"ts":"2025-09-22T11:09:50+05:30","type":"conversion_file","file":"/mnt/Converted_MBOX/mytestfile_message_0.html","status":"converted"}
+{"ts":"2025-09-22T11:09:50+05:30","type":"conversion_file","file":"/mnt/Converted_MBOX/sample_message_0.html","status":"converted"}
+{"ts":"2025-09-22T11:09:50+05:30","type":"conversion_file","file":"/mnt/Converted_MBOX/sample_message_1.html","status":"converted"}
+{"ts":"2025-09-22T05:39:50Z","type":"conversion_file","task_id":"TASK-202509-065","file":"/mnt/Converted_MBOX/mytestfile_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-22T05:39:50Z","type":"conversion_file","task_id":"TASK-202509-065","file":"/mnt/Converted_MBOX/sample_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-22T05:39:50Z","type":"conversion_file","task_id":"TASK-202509-065","file":"/mnt/Converted_MBOX/sample_message_1.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-22T05:39:50Z","type":"conversion_stage","task_id":"TASK-202509-065","status":"done","meta":{"path":"/mnt/"}}
+{"ts":"2025-09-22T05:40:19Z","type":"scan_engine","task_id":"TASK-202509-065","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-22T05:40:19Z","type":"scan_stage","task_id":"TASK-202509-065","status":"done"}
+{"ts":"2025-09-22T11:38:13+05:30","type":"conversion_file","file":"/mnt/Converted_MBOX/mytestfile_message_0.html","status":"converted"}
+{"ts":"2025-09-22T06:08:13Z","type":"conversion_file","task_id":"TASK-202509-064","file":"/mnt/Converted_MBOX/mytestfile_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-22T06:08:13Z","type":"conversion_stage","task_id":"TASK-202509-064","status":"done","meta":{"path":"/mnt"}}
+{"ts":"2025-09-22T11:48:43+05:30","type":"conversion_file","file":"/mnt/Converted_MBOX/mytestfile_message_0.html","status":"converted"}
+{"ts":"2025-09-22T11:48:43+05:30","type":"conversion_file","file":"/mnt/Converted_MBOX/sample_message_0.html","status":"converted"}
+{"ts":"2025-09-22T11:48:43+05:30","type":"conversion_file","file":"/mnt/Converted_MBOX/sample_message_1.html","status":"converted"}
+{"ts":"2025-09-22T06:18:43Z","type":"conversion_file","task_id":"TASK-202509-066","file":"/mnt/Converted_MBOX/mytestfile_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-22T06:18:43Z","type":"conversion_file","task_id":"TASK-202509-066","file":"/mnt/Converted_MBOX/sample_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-22T06:18:43Z","type":"conversion_file","task_id":"TASK-202509-066","file":"/mnt/Converted_MBOX/sample_message_1.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-22T06:18:43Z","type":"conversion_stage","task_id":"TASK-202509-066","status":"done","meta":{"path":"/mnt/"}}
+{"ts":"2025-09-22T06:20:43Z","type":"scan_engine","task_id":"TASK-202509-066","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-22T06:20:43Z","type":"scan_stage","task_id":"TASK-202509-066","status":"done"}
+{"ts":"2025-09-22T06:38:34Z","type":"scan_engine","task_id":"TASK-202509-064","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-22T06:38:34Z","type":"scan_stage","task_id":"TASK-202509-064","status":"done"}
+{"ts":"2025-09-23T12:56:42+05:30","type":"conversion_file","file":"/mnt/Converted_MBOX/mytestfile_message_0.html","status":"converted"}
+{"ts":"2025-09-23T12:56:42+05:30","type":"conversion_file","file":"/mnt/Converted_MBOX/sample_message_0.html","status":"converted"}
+{"ts":"2025-09-23T12:56:42+05:30","type":"conversion_file","file":"/mnt/Converted_MBOX/sample_message_1.html","status":"converted"}
+{"ts":"2025-09-23T07:26:42Z","type":"conversion_file","task_id":"TASK-202509-067","file":"/mnt/Converted_MBOX/mytestfile_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-23T07:26:42Z","type":"conversion_file","task_id":"TASK-202509-067","file":"/mnt/Converted_MBOX/sample_message_0.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-23T07:26:42Z","type":"conversion_file","task_id":"TASK-202509-067","file":"/mnt/Converted_MBOX/sample_message_1.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-23T07:26:42Z","type":"conversion_stage","task_id":"TASK-202509-067","status":"done","meta":{"path":"/mnt/"}}
+{"ts":"2025-09-23T07:29:05Z","type":"scan_engine","task_id":"TASK-202509-067","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-09-23T07:29:05Z","type":"scan_stage","task_id":"TASK-202509-067","status":"done"}
+{"ts":"2025-09-24T09:13:06Z","type":"conversion_file","task_id":"TASK-202509-101","file":"/srv/samba/av_data/attachments/index.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-24T09:13:06Z","type":"conversion_file","task_id":"TASK-202509-101","file":"/srv/samba/av_data/attachments/index.html","status":"converted","meta":{"conversion_type":"msg"}}
+{"ts":"2025-09-24T09:13:07Z","type":"conversion_file","task_id":"TASK-202509-101","file":"/srv/samba/av_data/attachments/index.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-24T09:13:07Z","type":"conversion_file","task_id":"TASK-202509-101","file":"/srv/samba/av_data/attachments/index.html","status":"converted","meta":{"conversion_type":"pst"}}
+{"ts":"2025-09-24T09:13:07Z","type":"conversion_stage","task_id":"TASK-202509-101","status":"done","meta":{"path":"/srv/samba/av_data/attachments.mbox"}}
+{"ts":"2025-09-24T09:16:57Z","type":"conversion_file","task_id":"TASK-202509-103","file":"/srv/samba/av_data/attachments/index.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-24T09:16:57Z","type":"conversion_file","task_id":"TASK-202509-103","file":"/srv/samba/av_data/attachments/index.html","status":"converted","meta":{"conversion_type":"msg"}}
+{"ts":"2025-09-24T09:16:57Z","type":"conversion_file","task_id":"TASK-202509-103","file":"/srv/samba/av_data/attachments/index.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-24T09:16:58Z","type":"conversion_file","task_id":"TASK-202509-103","file":"/srv/samba/av_data/attachments/index.html","status":"converted","meta":{"conversion_type":"pst"}}
+{"ts":"2025-09-24T09:16:58Z","type":"conversion_stage","task_id":"TASK-202509-103","status":"done","meta":{"path":"/srv/samba/av_data/attachments.mbox"}}
+{"ts":"2025-09-24T09:17:49Z","type":"conversion_file","task_id":"TASK-202509-104","file":"/srv/samba/av_data/attachments/index.html","status":"converted","meta":{"conversion_type":"eml"}}
+{"ts":"2025-09-24T09:17:49Z","type":"conversion_file","task_id":"TASK-202509-104","file":"/srv/samba/av_data/attachments/index.html","status":"converted","meta":{"conversion_type":"msg"}}
+{"ts":"2025-09-24T09:17:50Z","type":"conversion_file","task_id":"TASK-202509-104","file":"/srv/samba/av_data/attachments/index.html","status":"converted","meta":{"conversion_type":"mbox"}}
+{"ts":"2025-09-24T09:17:50Z","type":"conversion_file","task_id":"TASK-202509-104","file":"/srv/samba/av_data/attachments/index.html","status":"converted","meta":{"conversion_type":"pst"}}
+{"ts":"2025-09-24T09:17:50Z","type":"conversion_stage","task_id":"TASK-202509-104","status":"done","meta":{"path":"/srv/samba/av_data/"}}
+{"ts":"2025-09-24T09:18:34Z","type":"scan_engine","task_id":"TASK-202509-104","status":"done","av_name":"Clam AV"}
+{"ts":"2025-09-24T09:18:34Z","type":"scan_stage","task_id":"TASK-202509-104","status":"done"}
+{"ts":"2025-11-07T08:35:50Z","type":"conversion_stage","task_id":"TASK-202511-001","status":"done","meta":{"path":"/mnt/shared-scan-folder"}}
+{"ts":"2025-11-07T08:36:17Z","type":"scan_engine","task_id":"TASK-202511-001","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-07T08:36:17Z","type":"scan_stage","task_id":"TASK-202511-001","status":"done"}
+{"ts":"2025-11-07T08:42:12Z","type":"conversion_stage","task_id":"TASK-202511-002","status":"done","meta":{"path":"/mnt/shared-scan-folder"}}
+{"ts":"2025-11-07T08:42:37Z","type":"scan_engine","task_id":"TASK-202511-002","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-07T08:42:37Z","type":"scan_stage","task_id":"TASK-202511-002","status":"done"}
+{"ts":"2025-11-07T08:45:59Z","type":"conversion_stage","task_id":"TASK-202511-003","status":"done","meta":{"path":"/mnt/shared-scan-folder"}}
+{"ts":"2025-11-07T08:46:23Z","type":"scan_engine","task_id":"TASK-202511-003","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-07T08:46:23Z","type":"scan_stage","task_id":"TASK-202511-003","status":"done"}
+{"ts":"2025-11-07T08:47:12Z","type":"conversion_stage","task_id":"TASK-202511-004","status":"done","meta":{"path":"/mnt/shared-scan-folder/infected-folder"}}
+{"ts":"2025-11-07T08:48:01Z","type":"scan_engine","task_id":"TASK-202511-004","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-07T08:48:01Z","type":"scan_stage","task_id":"TASK-202511-004","status":"done"}
+{"ts":"2025-11-07T08:50:17Z","type":"conversion_stage","task_id":"TASK-202511-005","status":"done","meta":{"path":"/mnt/shared-scan-folder"}}
+{"ts":"2025-11-07T08:50:42Z","type":"scan_engine","task_id":"TASK-202511-005","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-07T08:50:42Z","type":"scan_stage","task_id":"TASK-202511-005","status":"done"}
+{"ts":"2025-11-07T09:10:38Z","type":"conversion_stage","task_id":"TASK-202511-006","status":"done","meta":{"path":"/mnt/shared-scan-folder/test-recursive"}}
+{"ts":"2025-11-07T09:11:03Z","type":"scan_engine","task_id":"TASK-202511-006","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-07T09:11:03Z","type":"scan_stage","task_id":"TASK-202511-006","status":"done"}
+{"ts":"2025-11-07T09:17:21Z","type":"conversion_stage","task_id":"TASK-202511-007","status":"done","meta":{"path":"/mnt/shared-scan-folder/test-recursive"}}
+{"ts":"2025-11-07T09:17:47Z","type":"scan_engine","task_id":"TASK-202511-007","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-07T09:17:47Z","type":"scan_stage","task_id":"TASK-202511-007","status":"done"}
+{"ts":"2025-11-07T09:22:03Z","type":"conversion_stage","task_id":"TASK-202511-008","status":"done","meta":{"path":"/mnt/shared-scan-folder/test-recursive"}}
+{"ts":"2025-11-07T09:22:28Z","type":"scan_engine","task_id":"TASK-202511-008","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-07T09:22:28Z","type":"scan_stage","task_id":"TASK-202511-008","status":"done"}
+{"ts":"2025-11-07T09:25:21Z","type":"conversion_stage","task_id":"TASK-202511-009","status":"done","meta":{"path":"/mnt/shared-scan-folder/test-recursive"}}
+{"ts":"2025-11-07T09:25:45Z","type":"scan_engine","task_id":"TASK-202511-009","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-07T09:25:45Z","type":"scan_stage","task_id":"TASK-202511-009","status":"done"}
+{"ts":"2025-11-07T09:30:54Z","type":"conversion_stage","task_id":"TASK-202511-010","status":"done","meta":{"path":"/mnt/shared-scan-folder/test-recursive"}}
+{"ts":"2025-11-07T09:31:18Z","type":"scan_engine","task_id":"TASK-202511-010","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-07T09:31:18Z","type":"scan_stage","task_id":"TASK-202511-010","status":"done"}
+{"ts":"2025-11-07T11:00:09Z","type":"conversion_stage","task_id":"TASK-202511-011","status":"done","meta":{"path":"/mnt/av-test-data/workflow-test"}}
+{"ts":"2025-11-07T11:00:35Z","type":"scan_engine","task_id":"TASK-202511-011","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-07T11:00:35Z","type":"scan_stage","task_id":"TASK-202511-011","status":"done"}
+{"ts":"2025-11-07T11:03:18Z","type":"conversion_stage","task_id":"TASK-202511-012","status":"done","meta":{"path":"/mnt/av-test-data/workflow-test"}}
+{"ts":"2025-11-07T11:03:42Z","type":"scan_engine","task_id":"TASK-202511-012","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-07T11:03:42Z","type":"scan_stage","task_id":"TASK-202511-012","status":"done"}
+{"ts":"2025-11-07T11:06:53Z","type":"conversion_stage","task_id":"TASK-202511-014","status":"done","meta":{"path":"/mnt/av-test-data"}}
+{"ts":"2025-11-07T11:07:14Z","type":"scan_engine","task_id":"TASK-202511-014","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-07T11:07:14Z","type":"scan_stage","task_id":"TASK-202511-014","status":"done"}
+{"ts":"2025-11-07T11:16:19Z","type":"conversion_stage","task_id":"TASK-202511-018","status":"done","meta":{"path":"/mnt/av-test-data"}}
+{"ts":"2025-11-07T11:16:44Z","type":"scan_engine","task_id":"TASK-202511-018","status":"done","av_name":"CLAM AV"}
+{"ts":"2025-11-07T11:16:44Z","type":"scan_stage","task_id":"TASK-202511-018","status":"done"}

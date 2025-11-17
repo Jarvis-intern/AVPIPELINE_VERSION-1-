@@ -205,19 +205,26 @@ func (es *ExtractionService) StartExtractionWithWebSocket(task ExtractionTask, u
 
 // StartExtractionWithPasswords starts extraction with provided passwords
 func (es *ExtractionService) StartExtractionWithPasswords(task ExtractionTask, userID string) {
-	session := &ExtractionSession{
-		TaskID:     task.TaskID,
-		FolderPath: task.FolderPath,
-		StartTime:  time.Now(),
-		UserID:     userID,
-	}
+    session := &ExtractionSession{
+        TaskID:     task.TaskID,
+        FolderPath: task.FolderPath,
+        StartTime:  time.Now(),
+        UserID:     userID,
+    }
+    es.mutex.Lock()
+    es.activeExtractions[userID] = session
+    es.mutex.Unlock()
 
-	es.mutex.Lock()
-	es.activeExtractions[userID] = session
-	es.mutex.Unlock()
+    // Inform UI we are resuming with provided passwords (clears "waiting" label)
+    sockets.EmitToUser(userID, "extraction_resuming", map[string]any{
+        "task_id":             task.TaskID,
+        "folder":              task.FolderPath,
+        "passwords_provided":  len(task.Passwords),
+        "message":             "Starting extraction with provided passwords",
+    })
 
-	archives, err := es.findArchiveFiles(task.FolderPath)
-	if err != nil {
+    archives, err := es.findArchiveFiles(task.FolderPath)
+    if err != nil {
 		es.emitError(session.UserID, task.TaskID, fmt.Sprintf("Error scanning folder: %v", err))
 		SignalStageComplete(task.TaskID, "EXTRACTION")
 		return

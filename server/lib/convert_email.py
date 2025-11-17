@@ -1,4 +1,4 @@
-import os, sys, json, argparse, html, traceback, logging
+import os, sys, json, argparse, html, traceback, logging, re, urllib.parse
 
 # Add this at the top of the file for better debugging
 logging.basicConfig(level=logging.DEBUG, 
@@ -34,6 +34,64 @@ except ImportError:
         sys.exit(1)
 
 import email, mailbox
+
+MAX_NAME_LEN = 120
+SAFE_KEEP = "-_.() "
+def sanitize(name: str) -> str:
+    name = name or "attachment"
+    name = name.strip()
+    # decode RFC2231 filename*: utf-8''percent-encoded
+    if "''" in name and name.endswith("*"):
+        try:
+            name = urllib.parse.unquote(name.split("''", 1)[1])
+        except Exception:
+            pass
+    # remove path separators and control chars
+    name = name.replace("\\", "_").replace("/", "_")
+    name = re.sub(r'[<>:"|?*\x00-\x1F]', "_", name)
+    name = re.sub(r"\s+", " ", name)
+    base, ext = os.path.splitext(name)
+    if not base:
+        base = "attachment"
+    if len(base) > MAX_NAME_LEN - len(ext):
+        base = base[: MAX_NAME_LEN - len(ext)]
+    return base + ext
+
+def unique_name(out_dir: str, name: str) -> str:
+    name = sanitize(name)
+    candidate = os.path.join(out_dir, name)
+    if not os.path.exists(candidate):
+        return name
+    base, ext = os.path.splitext(name)
+    for i in range(1, 10000):
+        alt = f"{base}_({i}){ext}"
+        if not os.path.exists(os.path.join(out_dir, alt)):
+            return alt
+    return f"{base}_{int(time.time()*1e6)}{ext}"
+
+def get_part_filename(part) -> str:
+    # Try common places for a filename
+    name = part.get_filename()
+    if not name:
+        cd = part.get("Content-Disposition", "")
+        m = re.search(r'filename\*?=(?:UTF-8\'\')?"?([^\";]+)"?', cd, re.I)
+        if m:
+            name = urllib.parse.unquote(m.group(1))
+    if not name:
+        ct = part.get("Content-Type", "")
+        m = re.search(r'name\*?=(?:UTF-8\'\')?"?([^\";]+)"?', ct, re.I)
+        if m:
+            name = urllib.parse.unquote(m.group(1))
+    return sanitize(name or "attachment.bin")
+
+def save_attachment(part, out_dir: str) -> str:
+    os.makedirs(out_dir, exist_ok=True)
+    filename = unique_name(out_dir, get_part_filename(part))
+    out_path = os.path.join(out_dir, filename)
+    payload = part.get_payload(decode=True) or b""
+    with open(out_path, "wb") as f:
+        f.write(payload)
+    return out_path
 
 def sanitize(name: str) -> str:
     keep = "-_.() "

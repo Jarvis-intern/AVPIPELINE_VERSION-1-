@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -244,63 +245,132 @@ func handleStartExtractionWithPasswords(client *sockets.Client, data map[string]
 	}()
 }
 
-// windowsToLinuxRelative maps a Windows path to a Linux path based on the first common directory
-func windowsToLinuxRelative(winPath, linuxBase string) string {
-	// Normalize slashes
-	winPathNorm := strings.ReplaceAll(winPath, "\\", "/")
-	linuxBaseNorm := filepath.ToSlash(linuxBase)
+// extractRelativePathFromUNC extracts the relative path from a UNC path
+// Example: \\?\UNC\192.168.1.51\ScanShare\subfolder\file.txt -> subfolder/file.txt
+func extractRelativePathFromUNC(uncPath string) string {
+	s := strings.TrimSpace(uncPath)
 
-	winParts := strings.Split(winPathNorm, "/")
-	linuxParts := strings.Split(linuxBaseNorm, "/")
+	// Handle \\?\UNC\ prefix (Windows extended-length path)
+	if strings.HasPrefix(s, `\\?\UNC\`) {
+		s = strings.TrimPrefix(s, `\\?\UNC\`)
+	} else if strings.HasPrefix(s, `\\\\?\\UNC\\`) {
+		s = strings.TrimPrefix(s, `\\\\?\\UNC\\`)
+	} else if strings.HasPrefix(s, `\\\\`) {
+		s = strings.TrimPrefix(s, `\\\\`)
+	} else if strings.HasPrefix(s, `\\`) {
+		s = strings.TrimPrefix(s, `\\`)
+	} else {
+		return "" // Not a UNC path
+	}
 
-	// Find the first common directory name
-	commonIdxWin := -1
-	commonIdxLinux := -1
-	for i, wp := range winParts {
-		for j, lp := range linuxParts {
-			if strings.EqualFold(wp, lp) && wp != "" {
-				commonIdxWin = i
-				commonIdxLinux = j
-				break
+	// Split by backslash
+	parts := strings.Split(s, `\`)
+	if len(parts) < 3 {
+		return "" // Need at least: host, share, file
+	}
+
+	// Handle optional "UNC" prefix in parts
+	if strings.EqualFold(parts[0], "UNC") && len(parts) >= 4 {
+		parts = parts[1:] // Skip "UNC"
+	}
+
+	// parts now: [host, share, rest...]
+	// We want everything after the share name
+	if len(parts) < 3 {
+		return ""
+	}
+
+	// Join the remaining parts (after host and share)
+	relativeParts := parts[2:]
+	relativePath := strings.Join(relativeParts, "/")
+
+	log.Printf("[UNC-EXTRACT] Extracted '%s' from UNC path", relativePath)
+	return relativePath
+}
+
+// extractRelativePathFromDrive extracts the relative path from a Windows drive path
+// Example: Z:\subfolder\file.txt -> subfolder/file.txt
+func extractRelativePathFromDrive(drivePath string) string {
+	re := regexp.MustCompile(`^[A-Za-z]:\\`)
+	if !re.MatchString(drivePath) {
+		return "" // Not a drive path
+	}
+
+	// Remove drive letter and leading backslash
+	relativePath := strings.TrimPrefix(drivePath[2:], `\`)
+	// Convert backslashes to forward slashes
+	relativePath = strings.ReplaceAll(relativePath, `\`, `/`)
+
+	log.Printf("[DRIVE-EXTRACT] Extracted '%s' from drive path", relativePath)
+	return relativePath
+}
+
+// convertWindowsPathToLinux converts a Windows path (UNC or drive letter) to a Linux path
+// by combining the original scan base path with the relative path extracted from Windows path.
+// This makes it portable - works with any mount point, any share name, any folder!
+//
+// basePath: The original Linux scan path provided by the user (e.g., /mnt/my-folder)
+// winPath: The Windows path returned by ClamAV (e.g., \\?\UNC\192.168.1.51\ScanShare\subfolder\file.txt)
+// Returns: Linux path (e.g., /mnt/my-folder/subfolder/file.txt)
+func convertWindowsPathToLinux(basePath, winPath string) string {
+	var relativePath string
+
+	// Try extracting from UNC path first
+	if strings.HasPrefix(winPath, `\\`) || strings.HasPrefix(winPath, `\\\\`) {
+		relativePath = extractRelativePathFromUNC(winPath)
+		if relativePath != "" {
+			// Check if relativePath starts with a folder name that's already in basePath
+			// E.g., basePath = /mnt/av-test-data/workflow-test
+			//       relativePath = workflow-test/level1/virus2.txt
+			// We need to remove the duplicate "workflow-test" part
+			basePathParts := strings.Split(filepath.Clean(basePath), string(filepath.Separator))
+			relativePathParts := strings.Split(filepath.ToSlash(relativePath), "/")
+
+			// Find and remove common suffix in basePath with prefix in relativePath
+			for i := len(basePathParts) - 1; i >= 0; i-- {
+				if len(relativePathParts) > 0 && basePathParts[i] == relativePathParts[0] {
+					// Found match - skip this part in relativePath
+					relativePathParts = relativePathParts[1:]
+					relativePath = strings.Join(relativePathParts, "/")
+					log.Printf("[PATH-CONVERT] Removed duplicate folder '%s' from relative path", basePathParts[i])
+					break
+				}
 			}
-		}
-		if commonIdxWin != -1 {
-			break
+
+			linuxPath := filepath.Join(basePath, relativePath)
+			log.Printf("[PATH-CONVERT] UNC: %s + %s = %s", basePath, relativePath, linuxPath)
+			return linuxPath
 		}
 	}
 
-	if commonIdxWin == -1 || commonIdxLinux == -1 {
-		// No common directory, fallback to basename
-		return filepath.Join(linuxBase, filepath.Base(winPathNorm))
+	// Try extracting from drive letter path
+	if regexp.MustCompile(`^[A-Za-z]:\\`).MatchString(winPath) {
+		relativePath = extractRelativePathFromDrive(winPath)
+		if relativePath != "" {
+			linuxPath := filepath.Join(basePath, relativePath)
+			log.Printf("[PATH-CONVERT] Drive: %s + %s = %s", basePath, relativePath, linuxPath)
+			return linuxPath
+		}
 	}
 
-	// Get the relative path after the common directory in Windows path
-	relParts := winParts[commonIdxWin+1:]
-	relPath := strings.Join(relParts, "/")
-
-	// Join with the Linux base up to the common directory
-	linuxPrefix := strings.Join(linuxParts[:commonIdxLinux+1], "/")
-	return filepath.Join(linuxPrefix, relPath)
+	// Fallback: assume it's already a relative path or use basename
+	log.Printf("[PATH-CONVERT] Using fallback for: %s", winPath)
+	return filepath.Join(basePath, filepath.Base(winPath))
 }
 
 // handleOrganizeAVResults organizes files into infected and cleaned folders based on AV scan results
+// SIMPLIFIED APPROACH: Uses the original scan path + relative paths extracted from Windows paths
+// No hardcoded paths, no environment variables needed!
 func handleOrganizeAVResults(client *sockets.Client, data map[string]any) {
-	// Extract required parameters
-	filePath, ok := data["filePath"].(string)
-	if !ok || filePath == "" {
+	// Extract the original Linux scan path (e.g., /mnt/my-folder, /srv/data, etc.)
+	basePath, ok := data["filePath"].(string)
+	if !ok || basePath == "" {
 		log.Printf("Error: Invalid filePath in organize_av_results request")
 		sockets.EmitError(client, "Missing required field: filePath", "organize_av_results_error")
 		return
 	}
 
-	originalInputPath := filePath
-	if info, err := os.Stat(filePath); err == nil && !info.IsDir() {
-		// If a file was supplied, use its parent directory for organization
-		parent := filepath.Dir(filePath)
-		log.Printf("[handleOrganizeAVResults] Provided filePath is a file (%s). Using parent directory: %s", filePath, parent)
-		filePath = parent
-	}
-
+	// Get the list of infected files (Windows paths from ClamAV)
 	infectedFilesInterface, ok := data["infectedFiles"].([]interface{})
 	if !ok {
 		log.Printf("Error: Invalid infectedFiles in organize_av_results request")
@@ -308,19 +378,96 @@ func handleOrganizeAVResults(client *sockets.Client, data map[string]any) {
 		return
 	}
 
-	// Convert infected files to string slice and map Windows paths to Linux paths
-	var infectedFiles []string
-	for _, file := range infectedFilesInterface {
-		if fileStr, ok := file.(string); ok {
-			linuxPath := windowsToLinuxRelative(fileStr, filePath)
-			rel, _ := filepath.Rel(filePath, linuxPath)
-			infectedFiles = append(infectedFiles, rel)
-		} else if obj, ok := file.(map[string]any); ok {
-			if p, ok := obj["filePath"].(string); ok {
-				linuxPath := windowsToLinuxRelative(p, filePath)
-				rel, _ := filepath.Rel(filePath, linuxPath)
-				infectedFiles = append(infectedFiles, rel)
+	// If basePath is a Windows path (like Y:\ or Z:\), we need to find the Linux equivalent
+	originalWindowsPath := basePath
+	if regexp.MustCompile(`^[A-Za-z]:\\`).MatchString(basePath) || strings.HasPrefix(basePath, `\\`) {
+		log.Printf("[ORGANIZE] Base path is Windows format: %s, searching for Linux mount point...", basePath)
+
+		// For drive letters (Y:\, Z:\), scan all /mnt directories to find matching content
+		foundLinuxPath := false
+
+		// Try common mount point patterns first
+		driveLetter := strings.ToUpper(string(basePath[0]))
+		possiblePaths := []string{
+			"/mnt/" + driveLetter,
+			"/mnt/" + strings.ToLower(driveLetter),
+		}
+
+		// Then try scanning all /mnt directories
+		if entries, err := os.ReadDir("/mnt"); err == nil {
+			for _, entry := range entries {
+				if entry.IsDir() {
+					possiblePaths = append(possiblePaths, "/mnt/"+entry.Name())
+				}
 			}
+		}
+
+		// Also check /srv and /media
+		if entries, err := os.ReadDir("/srv"); err == nil {
+			for _, entry := range entries {
+				if entry.IsDir() {
+					possiblePaths = append(possiblePaths, "/srv/"+entry.Name())
+				}
+			}
+		}
+
+		for _, testPath := range possiblePaths {
+			if info, err := os.Stat(testPath); err == nil && info.IsDir() {
+				basePath = testPath
+				log.Printf("[ORGANIZE] Found Linux mount point: %s for Windows path: %s", basePath, originalWindowsPath)
+				foundLinuxPath = true
+				break
+			}
+		}
+
+		if !foundLinuxPath {
+			log.Printf("[ORGANIZE] ERROR: Could not find Linux mount for Windows path: %s", originalWindowsPath)
+			sockets.EmitError(client, fmt.Sprintf("Cannot organize: Windows path %s is not mounted on Linux. Please mount the share to /mnt/ first.", originalWindowsPath), "organize_av_results_error")
+			return
+		}
+	}
+
+	// Ensure basePath is a directory
+	if info, err := os.Stat(basePath); err == nil {
+		if !info.IsDir() {
+			basePath = filepath.Dir(basePath)
+			log.Printf("[ORGANIZE] Base path was a file, using parent: %s", basePath)
+		}
+	} else {
+		log.Printf("[ORGANIZE] WARNING: Base path does not exist: %s", basePath)
+		sockets.EmitError(client, fmt.Sprintf("Base path does not exist: %s", basePath), "organize_av_results_error")
+		return
+	}
+
+	log.Printf("[ORGANIZE] Starting organization - Base path: %s, Infected files: %d", basePath, len(infectedFilesInterface))
+
+	// Convert Windows paths to relative paths
+	var relativeInfectedFiles []string
+	for _, v := range infectedFilesInterface {
+		var winPath string
+		if s, ok := v.(string); ok {
+			winPath = s
+		} else if obj, ok := v.(map[string]any); ok {
+			if s, ok := obj["filePath"].(string); ok {
+				winPath = s
+			}
+		}
+
+		if winPath == "" {
+			continue
+		}
+
+		log.Printf("[ORGANIZE] Processing: %s", winPath)
+
+		// Convert Windows path to Linux path using the base path
+		linuxPath := convertWindowsPathToLinux(basePath, winPath)
+
+		// Get relative path for organizing
+		if rel, err := filepath.Rel(basePath, linuxPath); err == nil {
+			log.Printf("[ORGANIZE] Relative path: %s", rel)
+			relativeInfectedFiles = append(relativeInfectedFiles, rel)
+		} else {
+			log.Printf("[ORGANIZE] ERROR: Failed to get relative path for %s: %v", linuxPath, err)
 		}
 	}
 
@@ -333,10 +480,11 @@ func handleOrganizeAVResults(client *sockets.Client, data map[string]any) {
 
 	taskID, _ := data["task_id"].(string)
 
+	log.Printf("[ORGANIZE] Will organize %d files from base: %s", len(relativeInfectedFiles), basePath)
+
+	// Start organizing in background
 	go func() {
-		log.Printf("[handleOrganizeAVResults] originalInput=%s resolvedBase=%s infectedCount=%d",
-			originalInputPath, filePath, len(infectedFiles))
-		organizeFiles(filePath, infectedFiles, userID, taskID)
+		organizeFiles(basePath, relativeInfectedFiles, userID, taskID)
 	}()
 }
 
@@ -365,7 +513,9 @@ func organizeFiles(filePath string, infectedFiles []string, userID string, taskI
 	infectedSet := make(map[string]bool)
 	for _, relPath := range infectedFiles {
 		infectedSet[relPath] = true
+		log.Printf("[organizeFiles] Added to infected set: %s", relPath)
 	}
+	log.Printf("[organizeFiles] Total infected files to move: %d", len(infectedSet))
 
 	var movedFiles []string
 	var errorFiles []string
@@ -376,6 +526,10 @@ func organizeFiles(filePath string, infectedFiles []string, userID string, taskI
 			return err
 		}
 		if d.IsDir() {
+			// Skip the infected folder itself
+			if strings.HasSuffix(path, "/infected") || strings.HasSuffix(path, "\\infected") {
+				return filepath.SkipDir
+			}
 			return nil
 		}
 		rel, relErr := filepath.Rel(filePath, path)
@@ -383,19 +537,46 @@ func organizeFiles(filePath string, infectedFiles []string, userID string, taskI
 			log.Printf("[organizeFiles] Failed to get relative path for %s: %v", path, relErr)
 			return nil
 		}
-		// Log the file being checked
+		// Check if this file is in the infected set
 		if infectedSet[rel] {
+			log.Printf("[organizeFiles] ✓ MATCH! Moving infected file: %s", rel)
 			destPath := filepath.Join(infectedFolder, rel)
+
+			// Emit progress update
+			sockets.EmitToUser(userID, "organize_progress", map[string]any{
+				"action":  "moving",
+				"file":    rel,
+				"message": fmt.Sprintf("Moving infected file: %s", filepath.Base(rel)),
+			})
+
 			if err := os.MkdirAll(filepath.Dir(destPath), 0755); err != nil {
-				log.Printf("[organizeFiles] Failed to create dest dir for %s: %v", destPath, err)
+				log.Printf("[organizeFiles] ✗ Failed to create dest dir for %s: %v", destPath, err)
 				errorFiles = append(errorFiles, rel)
+				sockets.EmitToUser(userID, "organize_progress", map[string]any{
+					"action":  "error",
+					"file":    rel,
+					"message": fmt.Sprintf("Failed to create directory for: %s", filepath.Base(rel)),
+					"error":   err.Error(),
+				})
 				return nil
 			}
 			if err := moveFile(path, destPath); err != nil {
-				log.Printf("[organizeFiles] Failed to move file %s: %v", path, err)
+				log.Printf("[organizeFiles] ✗ Failed to move file %s: %v", path, err)
 				errorFiles = append(errorFiles, rel)
+				sockets.EmitToUser(userID, "organize_progress", map[string]any{
+					"action":  "error",
+					"file":    rel,
+					"message": fmt.Sprintf("Failed to move: %s", filepath.Base(rel)),
+					"error":   err.Error(),
+				})
 			} else {
+				log.Printf("[organizeFiles] ✓ Successfully moved: %s -> infected/%s", rel, rel)
 				movedFiles = append(movedFiles, rel)
+				sockets.EmitToUser(userID, "organize_progress", map[string]any{
+					"action":  "moved",
+					"file":    rel,
+					"message": fmt.Sprintf("✓ Moved to quarantine: %s", filepath.Base(rel)),
+				})
 			}
 		}
 		return nil
@@ -403,6 +584,13 @@ func organizeFiles(filePath string, infectedFiles []string, userID string, taskI
 	if err != nil {
 		log.Printf("[organizeFiles] Error walking directory: %v", err)
 	}
+
+	log.Printf("[organizeFiles] ====== Organization Summary ======")
+	log.Printf("[organizeFiles] Total infected files: %d", len(infectedSet))
+	log.Printf("[organizeFiles] Successfully moved: %d", len(movedFiles))
+	log.Printf("[organizeFiles] Failed to move: %d", len(errorFiles))
+	log.Printf("[organizeFiles] Quarantine folder: %s", infectedFolder)
+	log.Printf("[organizeFiles] ===================================")
 
 	// After organizing, update isOrganized in the DB
 	task := models.Task{}
@@ -414,12 +602,19 @@ func organizeFiles(filePath string, infectedFiles []string, userID string, taskI
 		log.Printf("[organizeFiles] Could not update isOrganized for taskID %s: %v", taskID, err)
 	}
 
+	// collect file names for convenience
+	movedNames := make([]string, 0, len(movedFiles))
+	for _, p := range movedFiles {
+		movedNames = append(movedNames, filepath.Base(p))
+	}
+
 	sockets.EmitToUser(userID, "organize_av_results_complete", map[string]any{
-		"filePath":      filePath,
-		"movedFiles":    movedFiles,
-		"errorFiles":    errorFiles,
-		"infectedCount": len(infectedFiles),
-		"cleanedCount":  len(movedFiles) - len(infectedFiles),
+		"filePath":       filePath,
+		"movedFiles":     movedFiles,
+		"movedFileNames": movedNames, // NEW: just names
+		"errorFiles":     errorFiles,
+		"infectedCount":  len(infectedFiles),
+		"cleanedCount":   len(movedFiles) - len(infectedFiles),
 	})
 }
 

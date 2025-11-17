@@ -23,6 +23,7 @@ const ConvertFilePage: React.FC = () => {
     const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
     const [displayPath, setDisplayPath] = useState<string>("");
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [outputDir, setOutputDir] = useState<string>("");
 
     const handleBrowseClick = () => {
         if (fileInputRef.current) fileInputRef.current.value = "";
@@ -53,8 +54,13 @@ const ConvertFilePage: React.FC = () => {
         formData.append("conversion_type", selectedFormat);
         formData.append("user_id", socketUserId);
 
+        if (outputDir.trim()) {
+            formData.append("output_dir", outputDir.trim());
+        }
+
         for (let i = 0; i < selectedFiles.length; i++) {
-            formData.append("files", selectedFiles[i], selectedFiles[i].name);
+            const file = selectedFiles[i];
+            formData.append("files", file, file.name);
         }
 
         try {
@@ -96,6 +102,14 @@ const ConvertFilePage: React.FC = () => {
                             </SelectContent>
                         </Select>
                     </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="outputDir">Server Output Directory (optional)</Label>
+                            <Input id="outputDir" placeholder="e.g. /data/converted or leave blank to use temporary"
+                                   value={outputDir}
+                                   onChange={(e) => setOutputDir(e.target.value)}
+                                   className="bg-slate-50 dark:bg-slate-800" />
+                            <p className="text-xs text-muted-foreground">Tip: Specify an absolute path on the server to save results outside /tmp.</p>
+                        </div>
                     <div className="space-y-2">
                         <Label htmlFor="path">Files to Convert</Label>
                         <div className="flex gap-2">

@@ -38,6 +38,12 @@ export const AvScanStage = () => {
   }>({});
   const [completedScans, setCompletedScans] = useState<Set<string>>(new Set());
   const [organizing, setOrganizing] = useState(false);
+  const [organizeMessages, setOrganizeMessages] = useState<Array<{
+    action: string;
+    file: string;
+    message: string;
+    error?: string;
+  }>>([]);
 
   const avScanProgress = useMemo(
     () => stageProgress.find((stage) => stage.type === FlowStepType.AV_SCAN),
@@ -191,6 +197,7 @@ export const AvScanStage = () => {
   // Listen for organize events
   useEffect(() => {
     const handleDone = () => {
+      setOrganizing(false);
       useAutomateStore.setState((state) => ({
         stageProgress: state.stageProgress.map((stage) =>
           stage.type === FlowStepType.AV_SCAN
@@ -203,16 +210,28 @@ export const AvScanStage = () => {
             : stage
         ),
       }));
+      toast.success("Files organized successfully!");
     };
     const handleError = (data: any) => {
+      setOrganizing(false);
       toast.error(data.error);
+    };
+    const handleProgress = (data: any) => {
+      setOrganizeMessages((prev) => [...prev, data]);
+      if (data.action === "moved") {
+        toast.success(data.message);
+      } else if (data.action === "error") {
+        toast.error(data.message);
+      }
     };
 
     socket.on("organize_av_results_error", handleError);
     socket.on("organize_av_results_complete", handleDone);
+    socket.on("organize_progress", handleProgress);
     return () => {
       socket.off("organize_av_results_error", handleError);
       socket.off("organize_av_results_complete", handleDone);
+      socket.off("organize_progress", handleProgress);
     };
   }, []);
 
@@ -226,6 +245,7 @@ export const AvScanStage = () => {
       );
     });
     setOrganizing(true);
+    setOrganizeMessages([]);
     socket.emit("organize_av_results", {
       filePath,
       infectedFiles: allInfectedFiles,
@@ -324,8 +344,39 @@ export const AvScanStage = () => {
             </Button>
           )}
           {organizing && (
-            <div className="text-sm text-blue-500 mt-2">
-              Organizing files for all AVs...
+            <div className="space-y-2 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+              <div className="text-sm font-medium text-blue-700 dark:text-blue-300 flex items-center gap-2">
+                <span className="animate-spin">🔄</span>
+                Organizing files for all AVs...
+              </div>
+              {organizeMessages.length > 0 && (
+                <div className="max-h-48 overflow-y-auto space-y-1 mt-2">
+                  {organizeMessages.map((msg, idx) => (
+                    <div
+                      key={idx}
+                      className={`text-xs p-2 rounded ${
+                        msg.action === "moved"
+                          ? "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"
+                          : msg.action === "error"
+                          ? "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200"
+                          : "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200"
+                      }`}
+                    >
+                      {msg.message}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          {isOrganized && organizeMessages.length > 0 && (
+            <div className="space-y-2 p-4 bg-green-50 dark:bg-green-950 rounded-lg border border-green-200 dark:border-green-800">
+              <div className="text-sm font-medium text-green-700 dark:text-green-300 flex items-center gap-2">
+                ✓ Files organized successfully!
+              </div>
+              <div className="text-xs text-green-600 dark:text-green-400">
+                {organizeMessages.filter(m => m.action === "moved").length} files moved to quarantine
+              </div>
             </div>
           )}
           {isOrganized && (

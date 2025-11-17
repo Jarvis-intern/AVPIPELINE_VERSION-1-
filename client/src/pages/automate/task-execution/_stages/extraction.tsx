@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import socket from "@/lib/socket";
 import { Input } from "@/components/ui/input";
@@ -225,6 +226,23 @@ export const ExtractionStage = () => {
       );
     };
 
+    // Listen for resuming extraction
+    const handleResuming = (data: any) => {
+      if (data.task_id !== taskUniqueId) return;
+      setShowFileGrid(false);
+      setStageProgress(
+        stageProgress.map((stage) =>
+          stage.type === FlowStepType.EXTRACTION
+            ? {
+                ...stage,
+                status: StageStatus.RUNNING,
+                message: "Starting extraction...",
+              }
+            : stage
+        )
+      );
+    };
+
     // Register new Go WebSocket event listeners
     socket.on("extraction_files_discovered", handleFilesDiscovered);
     socket.on("extraction_archive_started", handleArchiveStarted);
@@ -232,6 +250,7 @@ export const ExtractionStage = () => {
     socket.on("extraction_password_required", handlePasswordRequired);
   socket.on("extraction_error", handleExtractionError);
   socket.on("extraction_waiting_for_passwords", handleWaitingForPasswords);
+    socket.on("extraction_resuming", handleResuming);
 
     return () => {
       socket.off("extraction_files_discovered", handleFilesDiscovered);
@@ -240,6 +259,7 @@ export const ExtractionStage = () => {
       socket.off("extraction_password_required", handlePasswordRequired);
   socket.off("extraction_error", handleExtractionError);
   socket.off("extraction_waiting_for_passwords", handleWaitingForPasswords);
+      socket.off("extraction_resuming", handleResuming);
     };
   }, [extractionProgress?.progress, taskUniqueId]);
 
@@ -265,6 +285,13 @@ export const ExtractionStage = () => {
 
   // Only emit start_extraction_with_passwords after user submits passwords
   const handleStartExtraction = () => {
+    setStageProgress(
+      stageProgress.map((stage) =>
+        stage.type === FlowStepType.EXTRACTION
+          ? { ...stage, status: StageStatus.RUNNING, message: "Starting extraction..." }
+          : stage
+      )
+    );
     socket.emit("start_extraction_with_passwords", {
       folder_path: filePath,
       task_id: taskUniqueId,
@@ -291,7 +318,6 @@ export const ExtractionStage = () => {
           stageTitle="Extraction"
           status={extractionProgress.status}
         />
-
         <div className="mt-4 space-y-4">
           <div className="flex items-start gap-2">
             <div className="text-slate-500 text-sm min-w-24">File Path:</div>
@@ -408,9 +434,13 @@ export const ExtractionStage = () => {
       <Dialog open={passwordDialog} onOpenChange={setPasswordDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Password Required</DialogTitle>
+            <DialogTitle>Passwords required</DialogTitle>
+            <DialogDescription>
+              Enter passwords to continue extracting protected archives.
+            </DialogDescription>
           </DialogHeader>
-          <div className="py-4">
+
+          <div className="space-y-3">
             <p className="mb-4">
               The archive <span className="font-medium">{currentArchive}</span>{" "}
               requires a password to extract.
@@ -431,14 +461,17 @@ export const ExtractionStage = () => {
               }}
             />
           </div>
+
           <DialogFooter>
-            <Button variant="outline" onClick={handleSkipPassword}>
-              Skip
+            <Button variant="secondary" onClick={() => setPasswordDialog(false)}>
+              Cancel
             </Button>
-            <Button onClick={handlePasswordSubmit}>Submit</Button>
+            <Button onClick={handlePasswordSubmit}>
+              Start Extraction
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
   );
-};
+}

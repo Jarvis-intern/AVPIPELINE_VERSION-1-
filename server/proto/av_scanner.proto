@@ -31,10 +31,11 @@ service VMMonitor {
 
 // ScanRequest represents a request to start a scan
 message ScanRequest {
-  string scan_id = 1;      // Unique identifier for the scan
-  string scan_path = 2;    // Path to scan
-  string av_tool_name = 3; // Name of the AV tool to use (e.g., "clamav")
-  string command = 4;      // Command to execute
+  string scan_id = 1;
+  string scan_path = 2;
+  string av_tool_name = 3;
+  string command = 4;
+  bool recursive = 5;
 }
 
 // ScanLog represents a single log entry from the scan
