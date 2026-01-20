@@ -1,0 +1,40 @@
+From: documents@company.com
+To: recipient@example.com
+Subject: Document Attached - Conversion Test
+Date: Mon, 20 Jan 2026 12:00:00 +0530
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_Attachment_98765"
+
+------=_Part_Attachment_98765
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+Please find the attached document for your review.
+
+This email tests the attachment extraction capability of the AV Pipeline.
+
+Best regards,
+Document Team
+
+------=_Part_Attachment_98765
+Content-Type: text/plain; charset="UTF-8"; name="sample_document.txt"
+Content-Disposition: attachment; filename="sample_document.txt"
+Content-Transfer-Encoding: base64
+
+VGhpcyBpcyBhIHNhbXBsZSBkb2N1bWVudCBhdHRhY2htZW50Lg0KDQpJdCBjb250YWlucyB0
+ZXh0IGNvbnRlbnQgdGhhdCBzaG91bGQgYmUgZXh0cmFjdGVkIGR1cmluZyBlbWFpbCBjb252
+ZXJzaW9uLg0KDQpUaGlzIGlzIGZvciB0ZXN0aW5nIHRoZSBBViBQaXBlbGluZSBlbWFpbC10
+by1IVE1MIGNvbnZlcnNpb24gZmVhdHVyZS4=
+
+------=_Part_Attachment_98765
+Content-Type: application/json; name="config_sample.json"
+Content-Disposition: attachment; filename="config_sample.json"
+Content-Transfer-Encoding: base64
+
+ew0KICAibmFtZSI6ICJTYW1wbGUgQ29uZmlnIiwNCiAgInZlcnNpb24iOiAiMS4wLjAiLA0K
+ICAiZGVzY3JpcHRpb24iOiAiVGhpcyBpcyBhIHNhbXBsZSBKU09OIGNvbmZpZ3VyYXRpb24g
+ZmlsZSBmb3IgdGVzdGluZyIsDQogICJzZXR0aW5ncyI6IHsNCiAgICAiZW5hYmxlZCI6IHRy
+dWUsDQogICAgIm1heEl0ZW1zIjogMTAwLA0KICAgICJ0aW1lb3V0IjogMzAwMA0KICB9DQp9
+
+------=_Part_Attachment_98765--

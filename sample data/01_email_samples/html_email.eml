@@ -1,0 +1,60 @@
+From: marketing@company.com
+To: customer@example.com
+Subject: Welcome to Our Newsletter - HTML Email Test
+Date: Mon, 20 Jan 2026 11:00:00 +0530
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="----=_Part_0_12345678"
+
+------=_Part_0_12345678
+Content-Type: text/plain; charset="UTF-8"
+
+Welcome to Our Newsletter!
+
+This is the plain text version of our HTML email.
+
+Visit us at: https://example.com
+
+------=_Part_0_12345678
+Content-Type: text/html; charset="UTF-8"
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome Newsletter</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px; color: white; text-align: center;">
+        <h1 style="margin: 0;">Welcome to Our Newsletter!</h1>
+    </div>
+    
+    <div style="padding: 20px; background: #f9f9f9; border-radius: 10px; margin-top: 20px;">
+        <h2 style="color: #333;">Hello Valued Customer,</h2>
+        <p style="color: #666; line-height: 1.6;">
+            Thank you for subscribing to our newsletter. We're excited to have you on board!
+        </p>
+        <p style="color: #666; line-height: 1.6;">
+            You'll receive updates about:
+        </p>
+        <ul style="color: #666;">
+            <li>New product announcements</li>
+            <li>Exclusive offers and discounts</li>
+            <li>Industry news and insights</li>
+            <li>Tips and tutorials</li>
+        </ul>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="https://example.com" style="background: #667eea; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                Visit Our Website
+            </a>
+        </div>
+    </div>
+    
+    <footer style="text-align: center; padding: 20px; color: #999; font-size: 12px;">
+        <p>© 2026 Example Company. All rights reserved.</p>
+        <p>This is a test email for AV Pipeline conversion testing.</p>
+    </footer>
+</body>
+</html>
+
+------=_Part_0_12345678--

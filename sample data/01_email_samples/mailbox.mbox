@@ -1,0 +1,83 @@
+From sender1@example.com Mon Jan 20 10:00:00 2026
+From: sender1@example.com
+To: recipient@example.com
+Subject: First Email in MBOX
+Date: Mon, 20 Jan 2026 10:00:00 +0530
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+This is the first email in the MBOX file.
+
+MBOX files can contain multiple emails in a single file.
+This tests the pipeline's ability to parse and convert MBOX format.
+
+Best,
+Sender 1
+
+From sender2@example.com Mon Jan 20 11:00:00 2026
+From: sender2@example.com
+To: recipient@example.com
+Subject: Second Email - Meeting Request
+Date: Mon, 20 Jan 2026 11:00:00 +0530
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+Hi there,
+
+I'd like to schedule a meeting to discuss the project.
+
+Available times:
+- Tuesday 2:00 PM
+- Wednesday 10:00 AM
+- Thursday 3:00 PM
+
+Please let me know what works for you.
+
+Thanks,
+Sender 2
+
+From sender3@example.com Mon Jan 20 12:00:00 2026
+From: sender3@example.com
+To: recipient@example.com
+Subject: Third Email - Project Update
+Date: Mon, 20 Jan 2026 12:00:00 +0530
+MIME-Version: 1.0
+Content-Type: text/html; charset="UTF-8"
+
+<!DOCTYPE html>
+<html>
+<head><title>Project Update</title></head>
+<body>
+<h1>Project Status Update</h1>
+<p>Here's a quick update on the project:</p>
+<ul>
+<li><strong>Phase 1:</strong> Complete ✅</li>
+<li><strong>Phase 2:</strong> In Progress 🔄</li>
+<li><strong>Phase 3:</strong> Pending ⏳</li>
+</ul>
+<p>We're on track for the deadline.</p>
+<p>Regards,<br>Sender 3</p>
+</body>
+</html>
+
+From sender4@example.com Mon Jan 20 13:00:00 2026
+From: sender4@example.com  
+To: recipient@example.com
+Subject: Fourth Email - Important Announcement
+Date: Mon, 20 Jan 2026 13:00:00 +0530
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+IMPORTANT ANNOUNCEMENT
+
+This is an important announcement regarding upcoming changes.
+
+Please review the attached documentation (in a real email, 
+there would be attachments here).
+
+This MBOX file contains 4 emails total for testing the 
+email-to-HTML conversion feature.
+
+Best regards,
+Sender 4
+
