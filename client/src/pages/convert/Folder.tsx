@@ -66,13 +66,13 @@ const ConvertFolderPage: React.FC = () => {
   const [outputDir, setOutputDir] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
-  
+
   // *** NEW HANDLERS FOR FILE/FOLDER SELECTION ***
   const handleBrowseClick = () => {
     // Reset input value before click to allow re-selecting the same folder/file
     if (folderInputRef.current) folderInputRef.current.value = "";
     if (fileInputRef.current) fileInputRef.current.value = "";
-    
+
     // For now, we'll assume "folder" selection is primary for this page.
     // A toggle could be added later if single file uploads are also needed here.
     folderInputRef.current?.click();
@@ -132,7 +132,7 @@ const ConvertFolderPage: React.FC = () => {
       if (!response.ok) {
         throw new Error(result.error || "File upload failed");
       }
-      
+
       toast.success(result.message);
 
     } catch (error) {
@@ -241,154 +241,166 @@ const ConvertFolderPage: React.FC = () => {
 
       {/* --- STATUS AND RESULTS UI (NO CHANGES NEEDED BELOW THIS LINE) --- */}
       {(isConverting || apiResponse || phases.length > 0 || conversionError) && (
-        <Card>
-           <CardHeader>
-            <CardTitle>Conversion Status</CardTitle>
-            <CardDescription>
-              {isConverting
-                ? "Conversion in progress..."
-                : conversionError
-                ? "Conversion failed"
-                : "Conversion completed"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {/* Status Banner */}
+          <Card className={`border-l-4 ${conversionError ? 'border-l-red-500' : isConverting ? 'border-l-blue-500' : 'border-l-green-500'} shadow-sm`}>
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-lg">
+                    {isConverting ? "Conversion in Progress" : conversionError ? "Conversion Failed" : "Conversion Completed"}
+                  </CardTitle>
+                  <CardDescription>
+                    {isConverting ? "Please wait while we process your files..." : conversionError ? "An error occurred during the process." : "Your files have been processed successfully."}
+                  </CardDescription>
+                </div>
+                {isConverting ? (
+                  <Loader2 className="h-6 w-6 text-blue-500 animate-spin" />
+                ) : conversionError ? (
+                  <AlertCircle className="h-6 w-6 text-red-500" />
+                ) : (
+                  <div className="h-8 w-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                    <FileCheck className="h-5 w-5 text-green-600 dark:text-green-400" />
+                  </div>
+                )}
+              </div>
+            </CardHeader>
             {conversionError && (
-              <div className="flex items-center space-x-2 text-red-500 bg-red-50 p-3 rounded-md">
-                <AlertCircle className="h-4 w-4" />
-                <span>{conversionError}</span>
-              </div>
+              <CardContent>
+                <div className="text-sm font-medium text-red-600 bg-red-50 dark:bg-red-900/10 p-3 rounded border border-red-100 dark:border-red-900/20">
+                  {conversionError}
+                </div>
+              </CardContent>
             )}
-
             {conversionProgress && (
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="font-medium">Phase {currentPhase}</span>
-                  <span className="text-muted-foreground">
-                    {conversionProgress.converted} / {conversionProgress.total}{" "}
-                    files
-                  </span>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm font-medium">
+                    <span>Progress</span>
+                    <span className="text-muted-foreground">{Math.round(getProgressPercentage())}%</span>
+                  </div>
+                  <Progress value={getProgressPercentage()} className="h-2 w-full transition-all duration-300" />
+                  <p className="text-xs text-muted-foreground flex items-center gap-2 mt-2">
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    Processing: <span className="font-mono text-foreground">{conversionProgress.currentFile}</span>
+                  </p>
                 </div>
-                <Progress value={getProgressPercentage()} className="h-2" />
-                <div className="text-sm text-muted-foreground flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  Current file: {conversionProgress.currentFile}
-                </div>
-              </div>
+              </CardContent>
             )}
+          </Card>
 
-            {phases.length > 0 && (
-              <div className="space-y-2">
-                <h4 className="text-sm font-medium">Conversion Phases</h4>
-                <ScrollArea className="max-h-96 h-full overflow-auto rounded-md border p-4">
-                  {phases.map((phase) => (
-                    <div key={phase.phase} className="mb-4 last:mb-0">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">
-                          Phase {phase.phase}
-                        </span>
-                        <div className="flex space-x-2">
-                          <Badge variant="outline" className="text-green-500">
-                            <FileCheck className="h-3 w-3 mr-1" />
-                            {phase.convertedFiles} converted
-                          </Badge>
-                          {phase.failedFiles > 0 && (
-                            <Badge variant="outline" className="text-red-500">
-                              <FileX className="h-3 w-3 mr-1" />
-                              {phase.failedFiles} failed
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                      <div className="mt-2 text-xs text-muted-foreground">
-                        {phase.totalFiles} files processed
-                        {phase.startTime && phase.endTime && (
-                          <span className="ml-2">
-                            ({formatTimeTaken(phase.startTime, phase.endTime)})
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </ScrollArea>
-              </div>
-            )}
+          {/* Results Section */}
+          {apiResponse && (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {/* Stat Card: Total Files */}
+              <Card className="shadow-sm">
+                <CardContent className="p-6 flex flex-col items-center text-center space-y-2">
+                  <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-full">
+                    <FolderOpen className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                  </div>
+                  <div className="text-2xl font-bold">{apiResponse.total_files}</div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Total Files</p>
+                </CardContent>
+              </Card>
 
-            {apiResponse && (
-              <div className="space-y-4">
-                <h4 className="text-sm font-medium">Conversion Summary</h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <div className="text-muted-foreground">Total Files</div>
-                    <div className="font-medium">{apiResponse.total_files}</div>
+              {/* Stat Card: Success */}
+              <Card className="shadow-sm border-green-100 dark:border-green-900/20 bg-green-50/20 dark:bg-green-900/5">
+                <CardContent className="p-6 flex flex-col items-center text-center space-y-2">
+                  <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-full">
+                    <FileCheck className="h-6 w-6 text-green-600 dark:text-green-400" />
                   </div>
-                  <div>
-                    <div className="text-muted-foreground">
-                      Successfully Converted
-                    </div>
-                    <div className="font-medium text-green-500">
-                      {apiResponse.total_converted}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Failed</div>
-                    <div className="font-medium text-red-500">
-                      {apiResponse.total_failed}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Total Size</div>
-                    <div className="font-medium">
-                      {(apiResponse.total_size / (1024 * 1024)).toFixed(2)} MB
-                    </div>
-                  </div>
-                </div>
+                  <div className="text-2xl font-bold text-green-700 dark:text-green-400">{apiResponse.total_converted}</div>
+                  <p className="text-xs text-green-600/80 dark:text-green-400/80 uppercase tracking-wider font-semibold">Converted</p>
+                </CardContent>
+              </Card>
 
-                <Collapsible>
-                  <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-                    <ChevronDown className="h-4 w-4" />
-                    View Details
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="mt-4 space-y-4">
-        {/* *** FIX: ADD NULL CHECK BEFORE ACCESSING .length *** */}
-        {apiResponse.converted_files && apiResponse.converted_files.length > 0 && (
-            <div>
-                <h5 className="text-sm font-medium mb-2 flex items-center gap-2">
-                    <FileCheck className="h-4 w-4 text-green-500" />
-                    Converted Files
-                </h5>
-                <ScrollArea className="h-32 rounded-md border p-2">
-                    {apiResponse.converted_files.map((file, index) => (
-                        <div key={index} className="text-sm text-muted-foreground py-1">
-                            {file}
-                        </div>
-                    ))}
-                </ScrollArea>
+              {/* Stat Card: Failed */}
+              <Card className="shadow-sm border-red-100 dark:border-red-900/20 bg-red-50/20 dark:bg-red-900/5">
+                <CardContent className="p-6 flex flex-col items-center text-center space-y-2">
+                  <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-full">
+                    <FileX className="h-6 w-6 text-red-600 dark:text-red-400" />
+                  </div>
+                  <div className="text-2xl font-bold text-red-700 dark:text-red-400">{apiResponse.total_failed}</div>
+                  <p className="text-xs text-red-600/80 dark:text-red-400/80 uppercase tracking-wider font-semibold">Failed</p>
+                </CardContent>
+              </Card>
+
+              {/* Stat Card: Size */}
+              <Card className="shadow-sm">
+                <CardContent className="p-6 flex flex-col items-center text-center space-y-2">
+                  <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+                    <Clock className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div className="text-2xl font-bold">{(apiResponse.total_size / (1024 * 1024)).toFixed(2)} MB</div>
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Total Size</p>
+                </CardContent>
+              </Card>
             </div>
-        )}
+          )}
 
-        {/* *** FIX: ADD NULL CHECK BEFORE ACCESSING .length *** */}
-        {apiResponse.failed_files && apiResponse.failed_files.length > 0 && (
-            <div>
-                <h5 className="text-sm font-medium mb-2 flex items-center gap-2">
-                    <FileX className="h-4 w-4 text-red-500" />
-                    Failed Files
-                </h5>
-                <ScrollArea className="h-32 rounded-md border p-2">
-                    {apiResponse.failed_files.map((file, index) => (
-                        <div key={index} className="text-sm text-muted-foreground py-1">
-                            {file}
-                        </div>
-                    ))}
-                </ScrollArea>
+          {/* Detailed Lists */}
+          {apiResponse && (
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Converted Files List */}
+              <Card className="h-full flex flex-col shadow-sm">
+                <CardHeader className="pb-3 border-b bg-slate-50/50 dark:bg-slate-900/20">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-green-500" />
+                    <CardTitle className="text-base">Successful Types</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-0 flex-1">
+                  <ScrollArea className="h-[300px] w-full p-4">
+                    {apiResponse.converted_files && apiResponse.converted_files.length > 0 ? (
+                      <div className="space-y-2">
+                        {apiResponse.converted_files.map((file, index) => (
+                          <div key={index} className="group flex items-start gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors text-sm break-all border border-transparent hover:border-slate-100 dark:hover:border-slate-700">
+                            <FileCheck className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
+                            <span className="text-slate-600 dark:text-slate-300 font-mono text-xs leading-relaxed">{file}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="h-full flex flex-col items-center justify-center text-muted-foreground opacity-50 space-y-2">
+                        <FileCheck className="h-8 w-8" />
+                        <p className="text-sm">No files converted</p>
+                      </div>
+                    )}
+                  </ScrollArea>
+                </CardContent>
+              </Card>
+
+              {/* Failed Files List */}
+              <Card className="h-full flex flex-col shadow-sm border-red-100 dark:border-red-900/20">
+                <CardHeader className="pb-3 border-b bg-red-50/10 dark:bg-red-900/5">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-red-500" />
+                    <CardTitle className="text-base text-red-900 dark:text-red-200">Failed Conversions</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-0 flex-1 bg-red-50/5 dark:bg-red-900/5">
+                  <ScrollArea className="h-[300px] w-full p-4">
+                    {apiResponse.failed_files && apiResponse.failed_files.length > 0 ? (
+                      <div className="space-y-2">
+                        {apiResponse.failed_files.map((file, index) => (
+                          <div key={index} className="group flex items-start gap-3 p-2 rounded-lg bg-red-50/50 dark:bg-red-900/10 hover:bg-red-100/50 dark:hover:bg-red-900/20 transition-colors text-sm break-all border border-red-100 dark:border-red-900/20">
+                            <AlertCircle className="h-4 w-4 text-red-500 mt-0.5 shrink-0" />
+                            <span className="text-red-700 dark:text-red-300 font-mono text-xs leading-relaxed">{file}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="h-full flex flex-col items-center justify-center text-muted-foreground opacity-50 space-y-2">
+                        <FileCheck className="h-8 w-8 text-green-500" />
+                        <p className="text-sm">No failures</p>
+                      </div>
+                    )}
+                  </ScrollArea>
+                </CardContent>
+              </Card>
             </div>
-        )}
-    </CollapsibleContent>
-                </Collapsible>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+          )}
+        </div>
       )}
     </TabsContent>
   );

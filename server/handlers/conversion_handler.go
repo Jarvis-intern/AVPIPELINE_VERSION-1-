@@ -3,6 +3,7 @@ package handlers
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/fs"
@@ -10,6 +11,7 @@ import (
 	"net/http"
 	"net/textproto"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"sort"
@@ -202,11 +204,11 @@ func processConversion(task conv.ConversionTask, userID string) *conv.Conversion
 	return res
 }
 
-// Walk the folder and convert .eml and .mbox files
+// Walk the folder and convert .eml, .mbox, .msg, and .pst files
 func convertAnyToHTML(task conv.ConversionTask) (*conv.ConversionResult, error) {
 	result := &conv.ConversionResult{Status: "completed", ConversionType: strings.ToUpper(task.ConversionType), Path: task.Path, StartTime: time.Now(), TaskID: task.TaskID}
-	// Single scan and convert only .eml and .mbox files (stateless worker)
-	var emls, mboxes []string
+	// Scan for all supported email formats
+	var emls, mboxes, msgs, psts []string
 	err := filepath.WalkDir(task.Path, func(path string, d fs.DirEntry, err error) error {
 		if err != nil || d.IsDir() {
 			return nil
@@ -216,6 +218,10 @@ func convertAnyToHTML(task conv.ConversionTask) (*conv.ConversionResult, error) 
 			emls = append(emls, path)
 		case ".mbox":
 			mboxes = append(mboxes, path)
+		case ".msg":
+			msgs = append(msgs, path)
+		case ".pst":
+			psts = append(psts, path)
 		}
 		return nil
 	})
@@ -224,7 +230,10 @@ func convertAnyToHTML(task conv.ConversionTask) (*conv.ConversionResult, error) 
 	}
 	sort.Strings(emls)
 	sort.Strings(mboxes)
+	sort.Strings(msgs)
+	sort.Strings(psts)
 
+	// Convert EML files (native Go)
 	for _, p := range emls {
 		if err := convertEMLToHTML(p); err == nil {
 			out := strings.TrimSuffix(p, filepath.Ext(p)) + ".html"
@@ -235,6 +244,8 @@ func convertAnyToHTML(task conv.ConversionTask) (*conv.ConversionResult, error) 
 			result.FailedFiles = append(result.FailedFiles, p)
 		}
 	}
+
+	// Convert MBOX files (native Go)
 	for _, p := range mboxes {
 		if err := convertMBOXToHTML(p); err == nil {
 			out := filepath.Join(strings.TrimSuffix(p, filepath.Ext(p)), "index.html")
@@ -246,8 +257,92 @@ func convertAnyToHTML(task conv.ConversionTask) (*conv.ConversionResult, error) 
 		}
 	}
 
-	result.TotalFiles = len(emls) + len(mboxes)
+	// Convert MSG files (via Python script)
+	for _, p := range msgs {
+		outDir := strings.TrimSuffix(p, filepath.Ext(p))
+		converted, failed := convertViaPython("msg", p, outDir)
+		result.ConvertedFiles = append(result.ConvertedFiles, converted...)
+		result.FailedFiles = append(result.FailedFiles, failed...)
+		result.TotalConverted += len(converted)
+		result.TotalFailed += len(failed)
+	}
+
+	// Convert PST files (via Python script)
+	for _, p := range psts {
+		outDir := strings.TrimSuffix(p, filepath.Ext(p))
+		converted, failed := convertViaPython("pst", p, outDir)
+		result.ConvertedFiles = append(result.ConvertedFiles, converted...)
+		result.FailedFiles = append(result.FailedFiles, failed...)
+		result.TotalConverted += len(converted)
+		result.TotalFailed += len(failed)
+	}
+
+	result.TotalFiles = len(emls) + len(mboxes) + len(msgs) + len(psts)
 	return result, nil
+}
+
+// convertViaPython calls the Python convert_email.py script for MSG and PST files
+func convertViaPython(fileType, inputPath, outputDir string) (converted []string, failed []string) {
+	// Get the path to the Python script
+	execPath, err := os.Executable()
+	if err != nil {
+		return nil, []string{inputPath}
+	}
+	serverDir := filepath.Dir(execPath)
+	// Try multiple possible locations for the Python script
+	pythonScript := filepath.Join(serverDir, "lib", "convert_email.py")
+	if _, err := os.Stat(pythonScript); os.IsNotExist(err) {
+		// Try relative to current working directory
+		pythonScript = filepath.Join("lib", "convert_email.py")
+		if _, err := os.Stat(pythonScript); os.IsNotExist(err) {
+			// Try absolute path from server directory
+			pythonScript = filepath.Join(filepath.Dir(filepath.Dir(execPath)), "server", "lib", "convert_email.py")
+			if _, err := os.Stat(pythonScript); os.IsNotExist(err) {
+				// Fallback: try current directory structure
+				cwd, _ := os.Getwd()
+				pythonScript = filepath.Join(cwd, "lib", "convert_email.py")
+			}
+		}
+	}
+
+	// Ensure output directory exists
+	if err := os.MkdirAll(outputDir, 0o755); err != nil {
+		return nil, []string{inputPath}
+	}
+
+	// Run Python script: python3 convert_email.py --type <type> --input <path> --output <dir>
+	cmd := exec.Command("python3", pythonScript, "--type", fileType, "--input", inputPath, "--output", outputDir)
+
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	err = cmd.Run()
+	output := stdout.Bytes()
+
+	if err != nil {
+		// Log the error but don't fail completely
+		fmt.Printf("Python conversion error for %s: %v\nStderr: %s\nStdout: %s\n", inputPath, err, stderr.String(), string(output))
+		return nil, []string{inputPath}
+	}
+
+	// Parse JSON output from Python script
+	var result struct {
+		ConvertedFiles []string `json:"converted_files"`
+		FailedFiles    []string `json:"failed_files"`
+		Error          string   `json:"error"`
+	}
+	if err := json.Unmarshal(output, &result); err != nil {
+		fmt.Printf("Failed to parse Python output for %s: %v\nStdout: %s\nStderr: %s\n", inputPath, err, string(output), stderr.String())
+		return nil, []string{inputPath}
+	}
+
+	if result.Error != "" {
+		fmt.Printf("Python conversion reported error for %s: %s\n", inputPath, result.Error)
+		return result.ConvertedFiles, append(result.FailedFiles, inputPath)
+	}
+
+	return result.ConvertedFiles, result.FailedFiles
 }
 
 // EML/MBOX Conversion
