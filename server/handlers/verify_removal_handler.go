@@ -84,21 +84,21 @@ func updateVerifyRemovalResultsInDB(taskID string, updatedResults []VerifyRemova
 func HandleVerifyRemoveFiles(client *sockets.Client, data map[string]any) {
 	folderPathRaw, ok := data["folder_path"]
 	if !ok {
-		log.Fatalf("Error: 'folder_path' not found in request")
+		log.Printf("Error: 'folder_path' not found in request")
 		sockets.EmitError(client, "Missing field: folder_path", "verify_removal_error")
 		return
 	}
 
 	folderPath, ok := folderPathRaw.(string)
 	if !ok || folderPath == "" {
-		log.Fatalf("Error: Invalid 'folder_path' in request")
+		log.Printf("Error: Invalid 'folder_path' in request")
 		sockets.EmitError(client, "Invalid folder path", "verify_removal_error")
 		return
 	}
 
 	rawList, ok := data["verify_removal_list"].([]interface{})
 	if !ok {
-		log.Fatalf("Error: 'verify_removal_list' is not a valid list")
+		log.Printf("Error: 'verify_removal_list' is not a valid list")
 		sockets.EmitError(client, "Invalid or missing verify removal list", "verify_removal_error")
 		return
 	}
@@ -316,15 +316,24 @@ func countVerifyRemovalTypeFiles(folderPath string, verifyRemovalType string) (i
 
 func removeVerifyRemovalTypeFiles(folderPath string, verifyRemovalType string) (int, error) {
 	removedCount := 0
+	quarantineDir := getQuarantineDir(folderPath)
+
 	err := filepath.WalkDir(folderPath, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
+
+		// Skip quarantine directory itself
+		if d.IsDir() && path == quarantineDir {
+			return filepath.SkipDir
+		}
+
 		if !d.IsDir() && strings.HasSuffix(strings.ToLower(d.Name()), verifyRemovalType) {
-			removeErr := os.Remove(path)
-			if removeErr != nil {
-				fmt.Printf("Failed to remove: %s (error: %v)\n", path, removeErr)
-				return removeErr
+			// Move to quarantine instead of deleting
+			moveErr := moveToQuarantine(path, folderPath)
+			if moveErr != nil {
+				fmt.Printf("Failed to quarantine: %s (error: %v)\n", path, moveErr)
+				return moveErr
 			}
 			removedCount++
 		}

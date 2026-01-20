@@ -310,3 +310,8 @@
 {"ts":"2025-11-17T09:59:27Z","type":"conversion_stage","task_id":"TASK-202511-003","status":"done","meta":{"path":"/home/ashveil/Downloads/av-test_extracted"}}
 {"ts":"2025-11-17T09:59:55Z","type":"scan_engine","task_id":"TASK-202511-003","status":"done","av_name":"CLAM AV"}
 {"ts":"2025-11-17T09:59:55Z","type":"scan_stage","task_id":"TASK-202511-003","status":"done"}
+{"ts":"2026-01-20T06:20:59Z","type":"conversion_file","task_id":"conversion_1768890059281684044","file":"/tmp/av-pipeline-uploads/conversion_1768890059281684044/email_with_attachment.html","status":"converted","meta":{"conversion_type":"any-to-html"}}
+{"ts":"2026-01-20T06:20:59Z","type":"conversion_file","task_id":"conversion_1768890059281684044","file":"/tmp/av-pipeline-uploads/conversion_1768890059281684044/html_email.html","status":"converted","meta":{"conversion_type":"any-to-html"}}
+{"ts":"2026-01-20T06:20:59Z","type":"conversion_file","task_id":"conversion_1768890059281684044","file":"/tmp/av-pipeline-uploads/conversion_1768890059281684044/simple_email.html","status":"converted","meta":{"conversion_type":"any-to-html"}}
+{"ts":"2026-01-20T06:20:59Z","type":"conversion_file","task_id":"conversion_1768890059281684044","file":"/tmp/av-pipeline-uploads/conversion_1768890059281684044/comprehensive_mailbox/index.html","status":"converted","meta":{"conversion_type":"any-to-html"}}
+{"ts":"2026-01-20T06:20:59Z","type":"conversion_file","task_id":"conversion_1768890059281684044","file":"/tmp/av-pipeline-uploads/conversion_1768890059281684044/mailbox/index.html","status":"converted","meta":{"conversion_type":"any-to-html"}}

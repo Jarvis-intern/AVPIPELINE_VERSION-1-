@@ -84,21 +84,21 @@ func updateRemovalResultsInDB(taskID string, updatedResults []RemovalTypeResult,
 func HandleRemoveFiles(client *sockets.Client, data map[string]any) {
 	folderPathRaw, ok := data["folder_path"]
 	if !ok {
-		log.Fatalf("Error: 'folder_path' not found in request")
+		log.Printf("Error: 'folder_path' not found in request")
 		sockets.EmitError(client, "Missing field: folder_path", "removal_error")
 		return
 	}
 
 	folderPath, ok := folderPathRaw.(string)
 	if !ok || folderPath == "" {
-		log.Fatalf("Error: Invalid 'folder_path' in request")
+		log.Printf("Error: Invalid 'folder_path' in request")
 		sockets.EmitError(client, "Invalid folder path", "removal_error")
 		return
 	}
 
 	rawList, ok := data["removal_list"].([]interface{})
 	if !ok {
-		log.Fatalf("Error: 'removal_list' is not a valid list")
+		log.Printf("Error: 'removal_list' is not a valid list")
 		sockets.EmitError(client, "Invalid or missing removal list", "removal_error")
 		return
 	}
@@ -355,17 +355,100 @@ func countRemovalTypeFiles(folderPath string, removalType string) (int, error) {
 	return count, nil
 }
 
+// getQuarantineDir returns the quarantine directory path for a given folder.
+// Infected files are moved here instead of being permanently deleted.
+func getQuarantineDir(folderPath string) string {
+	return filepath.Join(folderPath, ".quarantine")
+}
+
+// moveToQuarantine moves a file to the quarantine directory instead of deleting it.
+// This preserves the file for later review while removing it from the active directory.
+func moveToQuarantine(filePath, folderPath string) error {
+	quarantineDir := getQuarantineDir(folderPath)
+	
+	// Ensure quarantine directory exists
+	if err := os.MkdirAll(quarantineDir, 0755); err != nil {
+		return fmt.Errorf("failed to create quarantine directory: %w", err)
+	}
+	
+	// Get relative path from folder root to preserve directory structure
+	relPath, err := filepath.Rel(folderPath, filePath)
+	if err != nil {
+		relPath = filepath.Base(filePath)
+	}
+	
+	// Create destination path in quarantine
+	destPath := filepath.Join(quarantineDir, relPath)
+	destDir := filepath.Dir(destPath)
+	
+	// Ensure destination directory exists
+	if err := os.MkdirAll(destDir, 0755); err != nil {
+		return fmt.Errorf("failed to create quarantine subdirectory: %w", err)
+	}
+	
+	// Handle name conflicts by adding timestamp
+	if _, err := os.Stat(destPath); err == nil {
+		ext := filepath.Ext(destPath)
+		base := strings.TrimSuffix(destPath, ext)
+		timestamp := time.Now().Format("20060102_150405")
+		destPath = fmt.Sprintf("%s_%s%s", base, timestamp, ext)
+	}
+	
+	// Move the file (rename)
+	if err := os.Rename(filePath, destPath); err != nil {
+		// If rename fails (cross-device), try copy + delete
+		return copyAndDelete(filePath, destPath)
+	}
+	
+	log.Printf("Quarantined: %s -> %s", filePath, destPath)
+	return nil
+}
+
+// copyAndDelete copies a file and then deletes the original (for cross-device moves)
+func copyAndDelete(src, dst string) error {
+	srcFile, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer srcFile.Close()
+	
+	dstFile, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer dstFile.Close()
+	
+	if _, err := dstFile.ReadFrom(srcFile); err != nil {
+		return err
+	}
+	
+	// Close files before removing source
+	srcFile.Close()
+	dstFile.Close()
+	
+	return os.Remove(src)
+}
+
 func removeRemovalTypeFiles(folderPath string, removalType string) (int, error) {
 	removedCount := 0
+	quarantineDir := getQuarantineDir(folderPath)
+	
 	err := filepath.WalkDir(folderPath, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err // Propagate walk error
 		}
+		
+		// Skip quarantine directory itself
+		if d.IsDir() && path == quarantineDir {
+			return filepath.SkipDir
+		}
+		
 		if !d.IsDir() && strings.HasSuffix(strings.ToLower(d.Name()), removalType) {
-			removeErr := os.Remove(path)
-			if removeErr != nil {
-				fmt.Printf("Failed to remove: %s (error: %v)\n", path, removeErr)
-				return removeErr // Stop on first deletion error (or change to continue)
+			// Move to quarantine instead of deleting
+			moveErr := moveToQuarantine(path, folderPath)
+			if moveErr != nil {
+				fmt.Printf("Failed to quarantine: %s (error: %v)\n", path, moveErr)
+				return moveErr // Stop on first error (or change to continue)
 			}
 			removedCount++
 		}
