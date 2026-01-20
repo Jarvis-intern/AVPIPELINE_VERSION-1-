@@ -1,0 +1,192 @@
+From user1@example.com Mon Jan 20 09:00:00 2026
+From: John Doe <john.doe@example.com>
+To: Jane Smith <jane.smith@example.com>
+Subject: Q1 2026 Project Meeting Schedule
+Date: Mon, 20 Jan 2026 09:00:00 +0530
+Message-ID: <20260120090000.ABC123@example.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Jane,
+
+I wanted to share the meeting schedule for Q1 2026:
+
+- Weekly standup: Every Monday at 10 AM
+- Sprint planning: First Monday of each month
+- Retrospective: Last Friday of each month
+
+Please confirm your availability.
+
+Best regards,
+John
+
+From manager@company.com Mon Jan 20 10:30:00 2026
+From: Project Manager <manager@company.com>
+To: team@company.com
+Subject: URGENT: Deadline Reminder for Project Alpha
+Date: Mon, 20 Jan 2026 10:30:00 +0530
+Message-ID: <20260120103000.DEF456@company.com>
+MIME-Version: 1.0
+Content-Type: text/html; charset="UTF-8"
+
+<!DOCTYPE html>
+<html>
+<head><title>Urgent Notice</title></head>
+<body style="font-family: Arial, sans-serif;">
+<div style="background: #ff6b6b; color: white; padding: 15px; border-radius: 5px;">
+<h2>⚠️ URGENT: Deadline Reminder</h2>
+</div>
+<p>Team,</p>
+<p>This is a reminder that <strong>Project Alpha</strong> is due on <em>January 31, 2026</em>.</p>
+<h3>Remaining Tasks:</h3>
+<ul>
+<li>Complete unit tests - <span style="color: orange;">In Progress</span></li>
+<li>Code review - <span style="color: red;">Not Started</span></li>
+<li>Documentation - <span style="color: green;">Complete</span></li>
+<li>Deployment preparation - <span style="color: red;">Not Started</span></li>
+</ul>
+<p>Please update your task status in the project tracker.</p>
+<p>Best,<br>Project Manager</p>
+</body>
+</html>
+
+From newsletter@startup.io Mon Jan 20 12:00:00 2026
+From: Startup Weekly <newsletter@startup.io>
+To: subscriber@example.com
+Subject: 🚀 This Week in Tech: AI Breakthroughs & More
+Date: Mon, 20 Jan 2026 12:00:00 +0530
+Message-ID: <20260120120000.GHI789@startup.io>
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="----=_NextPart_001"
+
+------=_NextPart_001
+Content-Type: text/plain; charset="UTF-8"
+
+STARTUP WEEKLY NEWSLETTER
+=========================
+
+Top Stories This Week:
+
+1. AI Breakthrough: New model achieves human-level reasoning
+2. Funding News: Cloud startup raises $500M Series D
+3. Product Launch: Revolutionary battery technology announced
+4. IPO Watch: Three unicorns preparing for public offering
+
+Read more at: https://startup.io/newsletter
+
+------=_NextPart_001
+Content-Type: text/html; charset="UTF-8"
+
+<!DOCTYPE html>
+<html>
+<head><title>Startup Weekly</title></head>
+<body style="font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; padding: 20px;">
+<div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+<div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); padding: 30px; text-align: center;">
+<h1 style="color: white; margin: 0;">🚀 Startup Weekly</h1>
+<p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0;">Your weekly dose of tech news</p>
+</div>
+<div style="padding: 30px;">
+<h2 style="color: #1f2937;">Top Stories This Week</h2>
+<div style="border-left: 4px solid #6366f1; padding-left: 15px; margin: 20px 0;">
+<h3 style="margin: 0; color: #374151;">AI Breakthrough</h3>
+<p style="color: #6b7280;">New model achieves human-level reasoning in benchmark tests</p>
+</div>
+<div style="border-left: 4px solid #10b981; padding-left: 15px; margin: 20px 0;">
+<h3 style="margin: 0; color: #374151;">Funding News</h3>
+<p style="color: #6b7280;">Cloud startup raises $500M Series D at $5B valuation</p>
+</div>
+<div style="border-left: 4px solid #f59e0b; padding-left: 15px; margin: 20px 0;">
+<h3 style="margin: 0; color: #374151;">Product Launch</h3>
+<p style="color: #6b7280;">Revolutionary battery technology promises 10x capacity</p>
+</div>
+</div>
+<div style="background: #f9fafb; padding: 20px; text-align: center;">
+<p style="color: #9ca3af; font-size: 12px; margin: 0;">© 2026 Startup Weekly. All rights reserved.</p>
+</div>
+</div>
+</body>
+</html>
+
+------=_NextPart_001--
+
+From support@service.com Mon Jan 20 14:00:00 2026
+From: Customer Support <support@service.com>
+To: customer@example.com
+Subject: Re: Ticket #12345 - Your Issue Has Been Resolved
+Date: Mon, 20 Jan 2026 14:00:00 +0530
+Message-ID: <20260120140000.JKL012@service.com>
+In-Reply-To: <original-ticket@customer.example.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+
+Dear Valued Customer,
+
+Thank you for contacting our support team.
+
+We're pleased to inform you that your issue (Ticket #12345) has been resolved.
+
+Issue Summary:
+- Problem: Unable to access account after password reset
+- Resolution: Account access restored, security settings updated
+
+If you have any further questions, please don't hesitate to reach out.
+
+Satisfaction Survey: https://service.com/survey/12345
+
+Best regards,
+Customer Support Team
+Service.com
+
+---
+Ticket ID: #12345
+Priority: High
+Category: Account Access
+Resolution Time: 2 hours
+
+From security@bank.example Mon Jan 20 16:00:00 2026
+From: Security Alert <security@bank.example>
+To: account.holder@example.com
+Subject: 🔒 Security Alert: New Login Detected
+Date: Mon, 20 Jan 2026 16:00:00 +0530
+Message-ID: <20260120160000.MNO345@bank.example>
+MIME-Version: 1.0
+Content-Type: text/html; charset="UTF-8"
+
+<!DOCTYPE html>
+<html>
+<head><title>Security Alert</title></head>
+<body style="font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px;">
+<div style="max-width: 500px; margin: 0 auto; background: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+<div style="text-align: center; margin-bottom: 20px;">
+<span style="font-size: 48px;">🔒</span>
+<h2 style="color: #1a1a1a; margin: 10px 0;">Security Alert</h2>
+</div>
+<p style="color: #333;">Dear Account Holder,</p>
+<p style="color: #333;">We detected a new login to your account:</p>
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+<tr style="background: #f5f5f5;">
+<td style="padding: 10px; border: 1px solid #ddd;"><strong>Date/Time:</strong></td>
+<td style="padding: 10px; border: 1px solid #ddd;">January 20, 2026 at 3:45 PM</td>
+</tr>
+<tr>
+<td style="padding: 10px; border: 1px solid #ddd;"><strong>Location:</strong></td>
+<td style="padding: 10px; border: 1px solid #ddd;">Mumbai, India</td>
+</tr>
+<tr style="background: #f5f5f5;">
+<td style="padding: 10px; border: 1px solid #ddd;"><strong>Device:</strong></td>
+<td style="padding: 10px; border: 1px solid #ddd;">Chrome on Windows</td>
+</tr>
+</table>
+<p style="color: #333;">If this was you, no action is needed.</p>
+<p style="color: #e74c3c;"><strong>If this wasn't you, please contact us immediately.</strong></p>
+<div style="text-align: center; margin-top: 20px;">
+<a href="#" style="background: #e74c3c; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px;">Report Suspicious Activity</a>
+</div>
+<p style="color: #888; font-size: 12px; margin-top: 30px; text-align: center;">
+This is an automated security notification. Please do not reply to this email.
+</p>
+</div>
+</body>
+</html>
+
